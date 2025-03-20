@@ -1,0 +1,55 @@
+<div class="almacenista-container">
+  <div class="form-container">
+    <h2>Agregar Producto</h2>
+
+    <form #productoForm="ngForm">
+      <label for="codigo">Código de Barras:</label>
+      <input type="text" id="codigo" name="codigo" [(ngModel)]="producto.codigo" required>
+
+      <label for="nombre">Nombre del Producto:</label>
+      <input type="text" id="nombre" name="nombre" [(ngModel)]="producto.nombreProducto" required>
+
+      <!-- Marca (Selección única) -->
+      <label for="marca">Marca:</label>
+      <select id="marca" name="marca" [(ngModel)]="selectedMarca">
+        <option *ngFor="let marca of marcas" [value]="marca">{{ marca }}</option>
+      </select>
+
+      <label for="tamano">Tamaño:</label>
+      <select id="tamano" name="tamano" [(ngModel)]="producto.tamano" required>
+        <option *ngFor="let tam of tamanos" [value]="tam">{{ tam }}</option>
+      </select>
+
+      <label for="proveedor">Proveedor:</label>
+      <select id="proveedor" name="proveedor" [(ngModel)]="selectedProveedor" (change)="addProveedor()">
+        <option *ngFor="let prov of proveedores" [value]="prov">{{ prov }}</option>
+      </select>
+
+      <div class="selected-providers">
+        <ul>
+          <li *ngFor="let prov of producto.proveedores" class="selected-provider">
+            <span>{{ prov }}</span>
+            <button type="button" (click)="removeProveedor(prov)" class="remove-btn">×</button>
+          </li>
+        </ul>
+      </div>
+
+      <label for="precioPieza">Precio por pieza:</label>
+      <input type="number" id="precioPieza" name="precioPieza" [(ngModel)]="producto.precioPieza" required>
+
+      <label for="precioCaja">Precio por caja:</label>
+      <input type="number" id="precioCaja" name="precioCaja" [(ngModel)]="producto.precioCaja" required>
+
+      <label for="piezasCaja">Piezas por caja:</label>
+      <input type="number" id="piezasCaja" name="piezasCaja" [(ngModel)]="producto.piezasCaja" required>
+
+      <label for="imagen">URL de la Imagen:</label>
+      <input type="text" id="imagen" name="imagen" [(ngModel)]="producto.imagen">            
+
+      <div class="form-buttons">
+        <button type="submit" (click)="guardarProducto()" [disabled]="!productoForm.valid">Guardar</button>
+        <button type="button" (click)="cancelar()" class="cancel-btn">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,16 @@
+<div class="almacenista-container">
+    <!-- Barra superior con búsqueda y botón de agregar -->
+    <div class="header">
+        <button class="exit-btn" (click)="salir()">Salir</button>
+        <input type="text" placeholder="Buscar producto por ID o nombre..." [(ngModel)]="searchQuery" (input)="filtrarProductos()">
+    </div>
+
+    <!-- Lista de productos en tarjetas -->
+    <div class="productos-container">
+        <div class="producto-card" *ngFor="let producto of productosFiltrados" (click)="verDetalleProducto(producto.id)">
+            <h3>{{ producto.nombre }}</h3>
+            <p>Precio: ${{ producto.precio }}</p>
+        </div>
+    </div>
+    
+</div>

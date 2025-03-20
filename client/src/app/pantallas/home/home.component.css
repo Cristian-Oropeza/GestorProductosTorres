@@ -1,0 +1,73 @@
+/* Asegura que el cuerpo y el html ocupen toda la pantalla */
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif; /* Font moderna y legible */
+  }
+  
+  /* Fondo de la pantalla */
+  .home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Asegura que ocupe el 100% de la altura de la ventana */
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); /* Fondo con gradiente */
+    color: white; /* El color por defecto de texto es blanco */
+  }
+  
+  /* Estilo para el mensaje de bienvenida */
+  .welcome-message {
+    font-size: 2.5rem; /* Tamaño de fuente grande para el mensaje */
+    font-weight: bold;
+    margin-bottom: 20px; /* Espacio entre el mensaje y los botones */
+    text-align: center;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Agrega sombra al texto para mejorar visibilidad */
+  }
+  
+  /* Estilo para los botones */
+  button {
+    background-color: #4fa3d1;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    margin: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.3s;
+    width: 250px; /* Asegura que los botones sean del mismo tamaño */
+  }
+  
+  button:hover {
+    background-color: #3a8dbd;
+  }
+  
+  /* Diseño responsivo: */
+  @media (max-width: 768px) {
+    .home-container {
+      padding: 10px; /* Añadir un poco de espacio en pantallas pequeñas */
+    }
+  
+    .welcome-message {
+      font-size: 1.8rem; /* Reducir tamaño de fuente para pantallas pequeñas */
+    }
+  
+    button {
+      width: 80%; /* Los botones ocupan más espacio en pantallas pequeñas */
+      padding: 12px 0;
+      font-size: 16px; /* Reducir tamaño de fuente de los botones */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .welcome-message {
+      font-size: 1.5rem; /* Aumentar el ajuste de texto para pantallas aún más pequeñas */
+    }
+  
+    button {
+      width: 100%; /* Los botones ocuparán todo el ancho en pantallas muy pequeñas */
+      padding: 10px 0;
+    }
+  }
+  

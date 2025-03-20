@@ -1,0 +1,57 @@
+<div class="detalle-producto-container" *ngIf="producto">
+    <div class="detalle-card">
+        <h2>Detalle del Producto</h2>
+
+        <!-- Imagen del Producto -->
+        <div class="imagen-container">
+            <img [src]="producto.imagen" alt="{{ producto.nombre_producto }}" class="producto-imagen">
+        </div>
+
+        <!-- Información del Producto -->
+        <div class="info-container">
+            <p><strong>Código de Barras:</strong> {{ producto.codigo }}</p>
+            <p><strong>Nombre:</strong> {{ producto.nombreProducto }}</p>
+            <p><strong>Marca:</strong> {{ producto.marca }}</p>
+            <p><strong>Tamaño:</strong> {{ producto.tamano }}</p>
+            <p><strong>Precio por pieza:</strong> {{ producto.precioPieza | currency }}</p>
+            <p><strong>Precio por caja:</strong> {{ producto.precioCaja | currency }}</p>
+            <p><strong>Piezas por caja:</strong> {{ producto.piezasCaja }}</p>
+            <p><strong>Stock en almacén:</strong> {{ producto.stockAlmacen }}</p>
+        </div>
+
+        <!-- Lista de Proveedores -->
+        <div class="proveedores-container">
+            <h3>Proveedores</h3>
+            <ul>
+                <li *ngFor="let proveedor of producto.proveedores">{{ proveedor }}</li>
+            </ul>
+        </div>
+
+        <!-- Botón para abrir modal de reabastecimiento -->
+        <button (click)="abrirModal()" class="btn btn-reabastecer">Reabastecer</button>
+        <!-- Botón para ver Historial de Precios -->
+<button (click)="verHistorialPrecios()" class="btn btn-historial">Historial de Precios</button>
+
+
+        <!-- Botón para volver -->
+        <button (click)="volver()" class="btn btn-volver">Volver</button>
+    </div>
+</div>
+
+<!-- Modal de Reabastecimiento -->
+<div class="modal" *ngIf="mostrarModal">
+    <div class="modal-content">
+        <h3>Reabastecer Producto</h3>
+
+        <label for="cantidad">Cantidad a reabastecer:</label>
+        <input id="cantidad" type="number" [(ngModel)]="cantidadReabastecer" min="1" class="input-field" />
+
+        <label for="fecha">Fecha de caducidad:</label>
+        <input id="fecha" type="date" [(ngModel)]="fechaCaducidad" class="input-field" />
+
+        <div class="modal-buttons">
+            <button (click)="confirmarReabastecimiento()" class="btn btn-confirmar">Confirmar</button>
+            <button (click)="cerrarModal()" class="btn btn-cerrar">Cancelar</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,57 @@
+<div class="almacenista-container">
+    <div class="form-container">
+        <h2>Actualizar Producto</h2>
+
+        <form #updateForm="ngForm">
+            <!-- Código de Barras (Solo Lectura) -->
+            <label for="codigo">Código de Barras:</label>
+            <input type="text" id="codigo" name="codigo" [(ngModel)]="producto.codigo" readonly>
+
+            <!-- Nombre del Producto (Solo Lectura) -->
+            <label for="nombre">Nombre del Producto:</label>
+            <input type="text" id="nombre" name="nombre" [(ngModel)]="producto.nombreProducto" readonly>
+
+            <!-- Marca (Solo Lectura) -->
+            <label for="marca">Marca:</label>
+            <input type="text" id="marca" name="marca" [(ngModel)]="producto.marca" readonly>
+
+            <!-- Tamaño (Solo Lectura) -->
+            <label for="tamano">Tamaño:</label>
+            <input type="text" id="tamano" name="tamano" [(ngModel)]="producto.tamano" readonly>
+
+            <!-- Proveedores (Selección múltiple) -->
+            <label for="proveedores">Proveedores:</label>
+            <div class="select-container">
+                <div class="selected-providers" *ngIf="producto.proveedores.length > 0">
+                    <ul>
+                        <li *ngFor="let prov of producto.proveedores" class="selected-provider">
+                            <span>{{ prov }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Precio por pieza (Editable) -->
+            <label for="precioPieza">Precio por pieza:</label>
+            <input type="number" id="precioPieza" name="precioPieza" [(ngModel)]="producto.precioPieza" required>
+
+            <!-- Precio por caja (Solo Lectura) -->
+            <label for="precioCaja">Precio por caja:</label>
+            <input type="number" id="precioCaja" name="precioCaja" [(ngModel)]="producto.precioCaja" readonly>
+
+            <!-- Stock en almacén (Editable) -->
+            <label for="stockAlmacen">Stock en almacén:</label>
+            <input type="number" id="stockAlmacen" name="stockAlmacen" [(ngModel)]="producto.stockAlmacen" readonly>
+
+            <!-- URL de la Imagen (Editable) -->
+            <label for="imagen">URL de la Imagen:</label>
+            <input type="text" id="imagen" name="imagen" [(ngModel)]="producto.imagen">
+
+            <!-- Botones -->
+            <div class="form-buttons">
+                <button type="submit" (click)="actualizarProducto()" [disabled]="!updateForm.valid">Actualizar</button>
+                <button type="button" (click)="cancelar()" class="cancel-btn">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>

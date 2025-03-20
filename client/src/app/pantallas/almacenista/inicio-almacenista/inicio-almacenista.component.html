@@ -1,0 +1,23 @@
+<div class="almacenista-container">
+    <!-- Barra superior con búsqueda y botón de agregar -->
+    <div class="header">
+        <button class="exit-btn" (click)="salir()">Salir</button>
+        <input type="text" placeholder="Buscar producto por código o nombre..." [(ngModel)]="searchQuery" (input)="filtrarProductos()">
+        <button class="add-btn" (click)="navigateToAgregar()">Agregar producto</button>
+    </div>
+
+    <!-- Lista de productos en tarjetas -->
+    <div class="productos-container">
+        <div class="producto-card" *ngFor="let producto of productosFiltrados" (click)="verDetalleProducto(producto.codigo)">
+            <div class="imagen-container">
+                <img [src]="producto.imagen" [alt]="producto.nombreProducto" class="producto-imagen">
+            </div>
+            <h3>{{ producto.nombreProducto }}</h3>
+            <p class="precio">$ {{ producto.precioPieza }}</p>
+            <div class="card-actions">
+                <button class="update-btn" (click)="actualizarProducto(producto.codigo); $event.stopPropagation()">Actualizar</button>
+                <button class="delete-btn" (click)="eliminarProducto(producto.codigo); $event.stopPropagation()">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>

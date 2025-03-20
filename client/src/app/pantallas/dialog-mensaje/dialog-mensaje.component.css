@@ -1,0 +1,59 @@
+.dialog-container {
+    min-width: 350px;
+    padding: 20px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.15); /* Fondo semi-transparente */
+    border-radius: 10px;
+    box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px); /* Efecto de desenfoque */
+    color: white;
+}
+
+h2 {
+    color: #4fa3d1;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+p {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+/* Alinear botones correctamente */
+.dialog-actions {
+    display: flex;
+    justify-content: center; /* Centra los botones */
+    gap: 15px; /* Espacio uniforme entre los botones */
+    padding: 0;
+    width: 100%;
+}
+
+/* Reducir la separación entre los botones */
+button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 16px;
+}
+
+/* Botón Aceptar (Azul) */
+button[color="primary"] {
+    background-color: #4fa3d1;
+    color: white;
+}
+
+button[color="primary"]:hover {
+    background-color: #3a8dbd;
+}
+
+/* Botón Cancelar (Rojo) */
+button[color="warn"] {
+    background-color: #d9534f;
+    color: white;
+}
+
+button[color="warn"]:hover {
+    background-color: #c9302c;
+}
