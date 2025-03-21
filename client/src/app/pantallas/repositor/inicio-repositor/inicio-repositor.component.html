@@ -1,0 +1,46 @@
+<div class="almacenista-container relative flex flex-col items-center min-h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 text-gray-900 p-4 overflow-hidden">
+    <!-- Fondo dinámico con textura sutil -->
+    <div class="absolute inset-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/diamond-upholstery.png')] opacity-10"></div>
+  
+    <!-- Barra superior con búsqueda y botón de salir -->
+    <div class="header bg-blue-500 text-white p-4 flex justify-between items-center w-full max-w-6xl rounded-lg shadow-md z-10 mt-4">
+      <button 
+        (click)="salir()" 
+        class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg transition-transform transform hover:scale-105"
+      >
+        Salir
+      </button>
+      <input 
+        type="text" 
+        placeholder="Buscar producto por ID o nombre..." 
+        [(ngModel)]="searchQuery" 
+        (input)="filtrarProductos()" 
+        class="px-4 py-2 text-lg text-gray-900 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+    </div>
+  
+    <!-- Lista de productos en tarjetas -->
+    <div class="productos-container p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl mt-6">
+      <div 
+        *ngFor="let producto of productosFiltrados" 
+        (click)="verDetalleProducto(producto.codigo)" 
+        class="producto-card bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-all transform hover:scale-105 cursor-pointer"
+      >
+        <!-- Imagen del Producto -->
+        <div class="imagen-container p-4 flex justify-center items-center h-64"> <!-- Ajustamos la altura del contenedor -->
+          <img 
+            [src]="producto.imagen" 
+            [alt]="producto.nombreProducto" 
+            class="w-full h-full object-contain rounded-lg"
+          >
+        </div>
+  
+        <!-- Información del Producto -->
+        <div class="p-4">
+          <h3 class="text-xl font-semibold text-gray-800">{{ producto.nombreProducto }}</h3>
+          <p class="text-lg text-gray-600 mt-2">Precio: {{ producto.precioPieza | currency }}</p>
+          <p class="text-sm text-gray-500">Stock: {{ producto.stock_almacen }}</p>
+        </div>
+      </div>
+    </div>
+  </div>

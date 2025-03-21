@@ -1,0 +1,250 @@
+<div class="almacenista-container relative flex flex-col items-center min-h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 text-gray-900 p-4 overflow-hidden">
+  <!-- Fondo dinámico con textura sutil -->
+  <div class="absolute inset-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/diamond-upholstery.png')] opacity-10"></div>
+
+  <!-- Contenedor del formulario -->
+  <div class="form-container bg-white p-8 rounded-lg shadow-lg w-full max-w-6xl z-10 mt-8">
+    <h2 class="text-3xl font-extrabold text-center bg-gradient-to-r from-blue-600 via-purple-500 to-pink-400 text-transparent bg-clip-text mb-6">
+      Agregar Producto
+    </h2>
+
+    <form #productoForm="ngForm" class="space-y-6">
+      <!-- Sección 1: Información Básica -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Código de Barras -->
+        <div>
+          <label for="codigo" class="block text-lg font-medium text-gray-700">Código de Barras:</label>
+          <input 
+            type="text" 
+            id="codigo" 
+            name="codigo" 
+            [(ngModel)]="producto.codigo" 
+            required 
+            class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+        </div>
+
+        <!-- Nombre del Producto -->
+        <div>
+          <label for="nombre" class="block text-lg font-medium text-gray-700">Nombre del Producto:</label>
+          <input 
+            type="text" 
+            id="nombre" 
+            name="nombre" 
+            [(ngModel)]="producto.nombreProducto" 
+            required 
+            class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+        </div>
+
+        <!-- Marca -->
+        <div>
+          <label for="marca" class="block text-lg font-medium text-gray-700">Marca:</label>
+          <select 
+            id="marca" 
+            name="marca" 
+            [(ngModel)]="selectedMarca" 
+            class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option *ngFor="let marca of marcas" [value]="marca">{{ marca }}</option>
+          </select>
+        </div>
+
+        <!-- Tamaño -->
+        <div>
+          <label for="tamano" class="block text-lg font-medium text-gray-700">Tamaño:</label>
+          <select 
+            id="tamano" 
+            name="tamano" 
+            [(ngModel)]="producto.tamano" 
+            required 
+            class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option *ngFor="let tam of tamanos" [value]="tam">{{ tam }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Sección 2: Proveedores (Acordeón) -->
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <details class="group">
+          <summary class="flex justify-between items-center cursor-pointer">
+            <span class="text-lg font-medium text-gray-700">Proveedores</span>
+            <svg class="w-6 h-6 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <div class="mt-4 space-y-4">
+            <!-- Selección de Proveedor -->
+            <div>
+              <label for="proveedor" class="block text-lg font-medium text-gray-700">Agregar Proveedor:</label>
+              <select 
+                id="proveedor" 
+                name="proveedor" 
+                [(ngModel)]="selectedProveedor" 
+                (change)="addProveedor()" 
+                class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option *ngFor="let prov of proveedores" [value]="prov">{{ prov }}</option>
+              </select>
+            </div>
+
+            <!-- Proveedores Seleccionados -->
+            <div class="selected-providers">
+              <ul class="space-y-2">
+                <li *ngFor="let prov of producto.proveedores" class="selected-provider bg-blue-100 text-blue-800 px-4 py-2 rounded-lg flex justify-between items-center">
+                  <span>{{ prov }}</span>
+                  <button 
+                    type="button" 
+                    (click)="removeProveedor(prov)" 
+                    class="remove-btn text-red-600 hover:text-red-800"
+                  >
+                    ×
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <!-- Sección 3: Precios y Existencias -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Precio por pieza -->
+        <div>
+          <label for="precioPieza" class="block text-lg font-medium text-gray-700">Precio por pieza:</label>
+          <input 
+            type="number" 
+            id="precioPieza" 
+            name="precioPieza" 
+            [(ngModel)]="producto.precioPieza" 
+            required 
+            class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+        </div>
+
+        <!-- Precio por caja -->
+        <div>
+          <label for="precioCaja" class="block text-lg font-medium text-gray-700">Precio por caja:</label>
+          <input 
+            type="number" 
+            id="precioCaja" 
+            name="precioCaja" 
+            [(ngModel)]="producto.precioCaja" 
+            required 
+            class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+        </div>
+
+        <!-- Piezas por caja -->
+        <div>
+          <label for="piezasCaja" class="block text-lg font-medium text-gray-700">Piezas por caja:</label>
+          <input 
+            type="number" 
+            id="piezasCaja" 
+            name="piezasCaja" 
+            [(ngModel)]="producto.piezasCaja" 
+            required 
+            class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+        </div>
+
+        <!-- URL de la Imagen -->
+        <div>
+          <label for="imagen" class="block text-lg font-medium text-gray-700">URL de la Imagen:</label>
+          <input 
+            type="text" 
+            id="imagen" 
+            name="imagen" 
+            [(ngModel)]="producto.imagen" 
+            class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+        </div>
+      </div>
+
+      <!-- Sección 4: Existencias y Stock (Acordeón) -->
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <details class="group">
+          <summary class="flex justify-between items-center cursor-pointer">
+            <span class="text-lg font-medium text-gray-700">Existencias y Stock</span>
+            <svg class="w-6 h-6 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Existencia en Exhibición -->
+            <div>
+              <label for="existencia_exhibe" class="block text-lg font-medium text-gray-700">Existencia en Exhibición:</label>
+              <input 
+                type="number" 
+                id="existencia_exhibe" 
+                name="existencia_exhibe" 
+                [(ngModel)]="producto.existencia_exhibe" 
+                required 
+                class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+            </div>
+
+            <!-- Stock en Exhibición -->
+            <div>
+              <label for="stock_exhibe" class="block text-lg font-medium text-gray-700">Stock en Exhibición:</label>
+              <input 
+                type="number" 
+                id="stock_exhibe" 
+                name="stock_exhibe" 
+                [(ngModel)]="producto.stock_exhibe" 
+                required 
+                class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+            </div>
+
+            <!-- Existencia en Almacén -->
+            <div>
+              <label for="existencia_almacen" class="block text-lg font-medium text-gray-700">Existencia en Almacén:</label>
+              <input 
+                type="number" 
+                id="existencia_almacen" 
+                name="existencia_almacen" 
+                [(ngModel)]="producto.existencia_almacen" 
+                required 
+                class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+            </div>
+
+            <!-- Stock en Almacén -->
+            <div>
+              <label for="stock_almacen" class="block text-lg font-medium text-gray-700">Stock en Almacén:</label>
+              <input 
+                type="number" 
+                id="stock_almacen" 
+                name="stock_almacen" 
+                [(ngModel)]="producto.stock_almacen" 
+                required 
+                class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <!-- Botones del formulario -->
+      <div class="form-buttons flex justify-end space-x-4">
+        <button 
+          type="submit" 
+          (click)="guardarProducto()" 
+          [disabled]="!productoForm.valid" 
+          class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-lg"
+        >
+          Guardar
+        </button>
+        <button 
+          type="button" 
+          (click)="cancelar()" 
+          class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg"
+        >
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
