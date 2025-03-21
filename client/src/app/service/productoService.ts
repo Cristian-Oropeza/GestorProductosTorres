@@ -5,8 +5,33 @@ import { Injectable } from '@angular/core';
 })
 export class ProductoService {
   productos = [
-    { codigo: '123456', nombreProducto: 'Mazapan', marca: 'De la rosa', tamano: '200g', precioPieza: 10, piezasCaja: 20, precioCaja: 50, stockAlmacen: 100, proveedores: ['Lala'], imagen: 'https://www.costco.com.mx/medias/sys_master/products/h13/h05/70367362285598.jpg' },
-    { codigo: '789101', nombreProducto: 'Coca cola', marca: 'Coca-Cola', tamano: '1L', precioPieza: 20, piezasCaja: 20, precioCaja: 100, stockAlmacen: 200, proveedores: ['Pepsi', 'Fanta'], imagen: 'https://cdn.milenio.com/uploads/media/2019/06/10/coca-cola-mantenido-respetuosa-esencia_74_0_1125_700.jpg' }
+    { codigo: '123456',
+      nombreProducto: 'Mazapan', 
+      marca: 'De la rosa', 
+      tamano: '200g', 
+      precioPieza: 10, 
+      piezasCaja: 20, 
+      precioCaja: 50, 
+      stock_almacen: 100, 
+      proveedores: ['Lala'], 
+      existencia_exhibe: 0,
+      stock_exhibe: 0,
+      existencia_almacen:0,
+  imagen: 'https://www.costco.com.mx/medias/sys_master/products/h13/h05/70367362285598.jpg' },
+
+    { codigo: '789101', 
+      nombreProducto: 'Coca cola', 
+      marca: 'Coca-Cola', 
+      tamano: '1L', 
+      precioPieza: 20, 
+      piezasCaja: 20, 
+      precioCaja: 100, 
+      stock_almacen: 200, 
+      proveedores: ['Pepsi', 'Fanta'], 
+      existencia_exhibe: 0,
+      stock_exhibe: 0,
+      existencia_almacen:0,
+      imagen: 'https://cdn.milenio.com/uploads/media/2019/06/10/coca-cola-mantenido-respetuosa-esencia_74_0_1125_700.jpg' }
   ];
 
   historicoPrecios: any[] = [];

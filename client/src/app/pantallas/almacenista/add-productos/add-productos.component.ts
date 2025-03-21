@@ -13,14 +13,17 @@ export class AddProductosComponent {
   producto = {
     codigo: '',
     nombreProducto: '',
-    marca: '',  // Ahora es un string en lugar de un array
+    marca: '',
     tamano: '',
     proveedores: [] as string[],
     precioPieza: 0,
     precioCaja: 0,
     piezasCaja: 0,
-    stockAlmacen: 0,
-    imagen: ''
+    imagen: '',
+    existencia_exhibe: 0,
+    stock_exhibe: 0,
+    existencia_almacen: 0,
+    stock_almacen: 0
   };
 
   marcas = ['Marca A', 'Marca B', 'Marca C'];
@@ -28,7 +31,7 @@ export class AddProductosComponent {
   proveedores = ['Proveedor X', 'Proveedor Y', 'Proveedor Z'];
 
   selectedProveedor: string = '';
-  selectedMarca: string = ''; // Ahora solo selecciona una marca
+  selectedMarca: string = '';
 
   constructor(
     private router: Router, 
@@ -47,28 +50,43 @@ export class AddProductosComponent {
     this.producto.proveedores = this.producto.proveedores.filter(p => p !== proveedor);
   }
 
-  guardarProducto() {
-    if (!this.producto.codigo.trim() || !this.producto.nombreProducto.trim()) {
-      alert('Código de barras y nombre del producto son obligatorios.');
-      return;
+  guardarProducto(): void {
+    // Validar que existencia no sea menor que stock
+    if (
+      this.producto.existencia_exhibe < this.producto.stock_exhibe ||
+      this.producto.existencia_almacen < this.producto.stock_almacen
+    ) {
+      // Abrir el diálogo de advertencia
+      const dialogRef = this.dialog.open(DialogMensajeComponent, {
+        width: '400px',
+        data: {
+          titulo: 'Advertencia',
+          mensaje: 'La existencia no puede ser menor que el stock.',
+          mostrarCancelar: false // No necesitamos el botón Cancelar en este caso
+        }
+      });
+  
+      dialogRef.afterClosed().subscribe(() => {
+        console.log('El usuario cerró el diálogo de advertencia.');
+      });
+      return; // Detener la ejecución si la validación falla
     }
-
+  
     // Asignar la marca seleccionada antes de guardar
     this.producto.marca = this.selectedMarca;
-
+  
+    // Guardar el producto en el servicio
     this.productoService.productos.push({ ...this.producto });
-
+  
+    // Mostrar diálogo de éxito
     const dialogRef = this.dialog.open(DialogMensajeComponent, {
       width: '400px',
-      disableClose: true,
-      autoFocus: true,
-      panelClass: 'custom-dialog-container',
       data: {
         titulo: 'Producto Registrado',
         mensaje: 'El producto ha sido registrado exitosamente.'
       }
     });
-
+  
     dialogRef.afterClosed().subscribe(() => {
       this.router.navigate(['inicioAlmacenista']);
     });
