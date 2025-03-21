@@ -1,5 +1,7 @@
 const Producto = require('../models/producto');
 const HistoricoPrecio = require('../models/historicoPrecio');
+const Proveedor = require('../models/proveedor');
+const Marca = require('../models/marca');
 
 // @desc    Obtener todos los productos
 // @route   GET /api/productos
@@ -141,11 +143,92 @@ const transferirStock = async (req, res) => {
   }
 };
 
+
+// @desc    Obtener productos por proveedor
+// @route   GET /api/productos/proveedor/:proveedor
+// @access  Public
+const getProductosByProveedor = async (req, res) => {
+  try {
+    const { proveedor } = req.params;
+
+    // Verificar si el proveedor existe en la colección Proveedor
+    const proveedorExistente = await Proveedor.findOne({ nombre_proveedor: { $regex: new RegExp(proveedor, 'i') } });
+
+    if (!proveedorExistente) {
+      return res.status(404).json({ message: 'El proveedor especificado no existe' });
+    }
+
+    // Buscar productos que tengan al proveedor en su lista de proveedores
+    const productos = await Producto.find({ proveedores: { $regex: new RegExp(proveedorExistente.nombre_proveedor, 'i') } });
+
+    if (productos.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron productos para el proveedor especificado' });
+    }
+
+    res.json(productos);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+// @desc    Obtener productos por marca
+// @route   GET /api/productos/marca/:marca
+// @access  Public
+const getProductosByMarca = async (req, res) => {
+  try {
+    const { marca } = req.params;
+
+    // Verificar si la marca existe en la colección Marca
+    const marcaExistente = await Marca.findOne({ nombre: { $regex: new RegExp(marca, 'i') } });
+
+    if (!marcaExistente) {
+      return res.status(404).json({ message: 'La marca especificada no existe' });
+    }
+
+    // Buscar productos que pertenezcan a la marca
+    const productos = await Producto.find({ marca: { $regex: new RegExp(marcaExistente.nombre, 'i') } });
+
+    if (productos.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron productos para la marca especificada' });
+    }
+
+    res.json(productos);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+// @desc    Buscar productos por nombre
+// @route   GET /api/productos/buscar/:nombre
+// @access  Public
+const buscarProductosPorNombre = async (req, res) => {
+  try {
+    const { nombre } = req.params;
+
+    // Buscar productos cuyo nombre coincida con el parámetro proporcionado
+    const productos = await Producto.find({ nombre_producto: { $regex: new RegExp(nombre, 'i') } });
+
+    if (productos.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron productos con ese nombre' });
+    }
+
+    res.json(productos);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
 module.exports = {
   getProductos,
   getProductoByCodigoBarras,
   createProducto,
   updateProducto,
   deleteProducto,
-  transferirStock
+  transferirStock,
+  getProductosByProveedor,
+  getProductosByMarca,
+  buscarProductosPorNombre
 };

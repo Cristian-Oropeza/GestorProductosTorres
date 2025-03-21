@@ -100,6 +100,9 @@ const deleteProveedor = async (req, res) => {
   }
 };
 
+
+
+
 module.exports = {
   getProveedores,
   getProveedorByNombre,

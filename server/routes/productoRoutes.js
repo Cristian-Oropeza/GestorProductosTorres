@@ -6,7 +6,10 @@ const {
   createProducto,
   updateProducto,
   deleteProducto,
-  transferirStock
+  transferirStock,
+  getProductosByMarca,
+  getProductosByProveedor,
+  buscarProductosPorNombre
 } = require('../controllers/productoController');
 
 // Rutas para productos
@@ -22,5 +25,17 @@ router.route('/:codigo_barras')
   // Ruta para transferir stock
 router.route('/transferir-stock/:codigo_barras')
 .put(transferirStock);
+
+// Ruta para obtener productos por marca
+router.route('/marca/:marca')
+  .get(getProductosByMarca);
+
+  // Ruta para obtener productos por proveedor
+router.route('/proveedor/:proveedor')
+.get(getProductosByProveedor);
+
+// Ruta para buscar productos por nombre
+router.route('/buscar/:nombre')
+  .get(buscarProductosPorNombre);
 
 module.exports = router;
