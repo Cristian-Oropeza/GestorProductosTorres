@@ -1,13 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { DialogMensajeComponent } from '../../dialog-mensaje/dialog-mensaje.component';
-import { ProductoService } from '../../../service/productoService';
+import { ProductoService } from '../../../service/producto.service';
 
 @Component({
   selector: 'app-actualizar-producto',
   templateUrl: './actualizar-producto.component.html',
-  styleUrls: ['./actualizar-producto.component.css']
+  styleUrls: ['./actualizar-producto.component.css'],
+  standalone: true,
+  imports: [CommonModule, FormsModule]
 })
 export class ActualizarProductoComponent implements OnInit {
   producto: any = {};  // Producto actual
@@ -20,60 +24,58 @@ export class ActualizarProductoComponent implements OnInit {
     private productoService: ProductoService  // Inyectar el servicio
   ) {}
 
-  ngOnInit() {
-    const codigoBarras = this.route.snapshot.paramMap.get('codigo');
-    if (codigoBarras) {
-      this.producto = this.productoService.obtenerProductoPorCodigoBarras(codigoBarras);
-    }
-
-    if (!this.producto) {
-      console.error(`No se encontró el producto con código de barras: ${codigoBarras}`);
+  async ngOnInit() {
+    const codigo_barras = this.route.snapshot.paramMap.get('codigo');
+    if (!codigo_barras) {
+      console.error('Código de barras no proporcionado en la URL.');
       return;
     }
 
-    this.precioAnterior = this.producto.precioPieza;
+    try {
+      this.producto = await this.productoService.obtenerProductoPorCodigo(codigo_barras);
+      if (!this.producto) {
+        console.error(`No se encontró el producto con código de barras: ${codigo_barras}`);
+        return;
+      }
+      this.precioAnterior = this.producto.precio_pieza;
+    } catch (error) {
+      console.error('Error al obtener el producto:', error);
+    }
   }
 
-  actualizarProducto() {
+  async actualizarProducto() {
     if (!this.producto || !this.producto.marca) {
       console.error("Error: El producto o su marca no están definidos.");
       return;
     }
 
-    // Comprobar si el precio ha cambiado
-    if (this.producto.precioPieza !== this.precioAnterior) {
-      const historico = {
-        codigo_barras: this.producto.codigo,  
-        nombre_producto: this.producto.nombreProducto,  
-        precio_anterior: this.precioAnterior,  
-        precio_nuevo: this.producto.precioPieza,  
-        fecha_registro: new Date().toISOString()  
-      };
+    try {
+      // Solo se envían los campos permitidos a actualizar
+      await this.productoService.actualizarProducto(this.producto.codigo_barras, {
+        precio_pieza: this.producto.precio_pieza,
+        imagen: this.producto.imagen
+      });
 
-      // Agregar el histórico de precios
-      this.productoService.agregarHistoricoPrecio(historico);
+      // Mostrar mensaje de éxito
+      this.dialog.open(DialogMensajeComponent, {
+        width: '400px',
+        disableClose: true,
+        autoFocus: true,
+        panelClass: 'custom-dialog-container',
+        data: {
+          titulo: 'Producto Actualizado',
+          mensaje: 'El producto ha sido actualizado exitosamente.'
+        }
+      }).afterClosed().subscribe(() => {
+        this.router.navigate(['/inicioAlmacenista']);  // Redirigir a la pantalla principal del almacenista
+      });
+
+    } catch (error) {
+      console.error('Error al actualizar producto:', error);
     }
-
-    // Actualizar el producto en el servicio
-    this.productoService.actualizarProducto(this.producto);
-
-    // Mostrar mensaje de éxito
-    this.dialog.open(DialogMensajeComponent, {
-      width: '400px',
-      disableClose: true,
-      autoFocus: true,
-      panelClass: 'custom-dialog-container',
-      data: {
-        titulo: 'Producto Actualizado',
-        mensaje: 'El producto ha sido actualizado exitosamente.'
-      }
-    }).afterClosed().subscribe(() => {
-      this.router.navigate(['/inicioAlmacenista']);  // Redirigir a la pantalla principal del almacenista
-    });
   }
 
   cancelar() {
     this.router.navigate(['/inicioAlmacenista']);  // Redirigir si el usuario cancela la actualización
   }
-  
 }

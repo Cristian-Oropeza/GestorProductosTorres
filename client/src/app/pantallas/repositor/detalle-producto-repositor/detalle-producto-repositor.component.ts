@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+/* import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ProductoService } from '../../../service/productoService';
@@ -87,3 +87,4 @@ export class DetalleProductoRepositorComponent implements OnInit {
     this.router.navigate(['/inicioRepositor']);
   }
 }
+ */

@@ -1,102 +1,170 @@
 <div class="detalle-producto-container relative flex flex-col items-center min-h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 text-gray-900 p-4 overflow-hidden" *ngIf="producto">
-    <!-- Fondo dinámico con textura sutil -->
-    <div class="absolute inset-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/diamond-upholstery.png')] opacity-10"></div>
-  
-    <!-- Contenedor de la tarjeta de detalle -->
-    <div class="detalle-card bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl z-10 mt-8">
-      <h2 class="text-3xl font-extrabold text-center bg-gradient-to-r from-blue-600 via-purple-500 to-pink-400 text-transparent bg-clip-text mb-6">
-        Detalle del Producto
-      </h2>
-  
-      <!-- Imagen del Producto -->
-      <div class="imagen-container flex justify-center mb-6">
-        <img [src]="producto.imagen" alt="{{ producto.nombreProducto }}" class="producto-imagen w-48 h-48 object-cover rounded-lg border-2 border-gray-200">
+  <!-- Fondo dinámico con textura sutil -->
+  <div class="absolute inset-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/diamond-upholstery.png')] opacity-10"></div>
+
+  <!-- Contenedor de la tarjeta de detalle -->
+  <div class="detalle-card bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl z-10 mt-8">
+    <h2 class="text-3xl font-extrabold text-center bg-gradient-to-r from-blue-600 via-purple-500 to-pink-400 text-transparent bg-clip-text mb-6">
+      Detalle del Producto
+    </h2>
+
+    <!-- Imagen del Producto -->
+    <div class="imagen-container flex justify-center mb-6">
+      <img [src]="producto.imagen" alt="{{ producto.nombre_producto }}" class="producto-imagen w-48 h-48 object-cover rounded-lg border-2 border-gray-200">
+    </div>
+
+    <!-- Información del Producto -->
+    <div class="info-container grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <p><strong class="text-gray-700">Código de Barras:</strong> {{ producto.codigo_barras }}</p>
+      <p><strong class="text-gray-700">Nombre:</strong> {{ producto.nombre_producto }}</p>
+      <p><strong class="text-gray-700">Marca:</strong> {{ producto.marca }}</p>
+      <p><strong class="text-gray-700">Tamaño:</strong> {{ producto.tamano }}</p>
+      <p><strong class="text-gray-700">Precio por pieza:</strong> {{ producto.precio_pieza | currency }}</p>
+      <p><strong class="text-gray-700">Precio por caja:</strong> {{ producto.precio_caja | currency }}</p>
+      <p><strong class="text-gray-700">Piezas por caja:</strong> {{ producto.piezas_caja }}</p>
+      <p><strong class="text-gray-700">Stock en almacén:</strong> {{ producto.stock_almacen }}</p>
+      <p><strong class="text-gray-700">Existencia en exhibición:</strong> {{ producto.existencia_exhibe }}</p>
+      <p><strong class="text-gray-700">Stock en exhibición:</strong> {{ producto.stock_exhibe }}</p>
+      <p><strong class="text-gray-700">Existencia en almacén:</strong> {{ producto.existencia_almacen }}</p>
+    </div>
+
+    <!-- Lista de Proveedores -->
+    <div class="proveedores-container bg-gray-50 p-4 rounded-lg mb-6">
+      <h3 class="text-xl font-semibold text-gray-700 mb-4">Proveedores</h3>
+      <ul class="space-y-2">
+        <li *ngFor="let proveedor of producto.proveedores" class="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg">
+          {{ proveedor }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="flex justify-center space-x-4">
+      <!-- Botón de Historial de Lotes -->
+      <button 
+        (click)="mostrarHistorialLotes = !mostrarHistorialLotes" 
+        class="px-4 py-2 text-lg font-semibold text-white bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full hover:shadow-lg transition duration-300"
+      >
+        {{ mostrarHistorialLotes ? 'Ocultar Historial de Lotes' : 'Ver Historial de Lotes' }}
+      </button>
+    
+      <!-- Botón de Historial de Precios -->
+      <button 
+        (click)="mostrarHistorialPrecios = !mostrarHistorialPrecios" 
+        class="px-4 py-2 text-lg font-semibold text-white bg-gradient-to-r from-purple-500 to-purple-600 rounded-full hover:shadow-lg transition duration-300"
+      >
+        {{ mostrarHistorialPrecios ? 'Ocultar Historial de Precios' : 'Ver Historial de Precios' }}
+      </button>
+    
+      <!-- Botón de Reabastecer -->
+      <button 
+        (click)="abrirModal()" 
+        class="px-4 py-2 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-full hover:shadow-lg transition duration-300"
+      >
+        Reabastecer
+      </button>
+    
+      <!-- Botón de Volver -->
+      <button 
+        (click)="volver()" 
+        class="px-4 py-2 text-lg font-semibold text-white bg-gradient-to-r from-gray-500 to-gray-600 rounded-full hover:shadow-lg transition duration-300"
+      >
+        Volver
+      </button>
+    </div>
+
+
+    <!-- Historial de Lotes (desplegable) -->
+    <div *ngIf="mostrarHistorialLotes" class="lotes-container bg-gray-50 p-4 rounded-lg mb-6">
+      <h3 class="text-xl font-semibold text-gray-700 mb-4">Historial de Lotes</h3>
+      <div *ngIf="lotes.length > 0; else noLotes">
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+            <thead class="bg-blue-500 text-white">
+              <tr>
+                <th class="px-6 py-3 text-left text-sm font-medium uppercase">Cantidad</th>
+                <th class="px-6 py-3 text-left text-sm font-medium uppercase">Fecha de Caducidad</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <tr *ngFor="let lote of lotes" class="hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4 text-sm text-gray-700">{{ lote.cantidad }}</td>
+                <td class="px-6 py-4 text-sm text-gray-700">{{ lote.fecha_caducidad | date: 'dd/MM/yyyy' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-  
-      <!-- Información del Producto -->
-      <div class="info-container grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <p><strong class="text-gray-700">Código de Barras:</strong> {{ producto.codigo }}</p>
-        <p><strong class="text-gray-700">Nombre:</strong> {{ producto.nombreProducto }}</p>
-        <p><strong class="text-gray-700">Marca:</strong> {{ producto.marca }}</p>
-        <p><strong class="text-gray-700">Tamaño:</strong> {{ producto.tamano }}</p>
-        <p><strong class="text-gray-700">Precio por pieza:</strong> {{ producto.precioPieza | currency }}</p>
-        <p><strong class="text-gray-700">Precio por caja:</strong> {{ producto.precioCaja | currency }}</p>
-        <p><strong class="text-gray-700">Piezas por caja:</strong> {{ producto.piezasCaja }}</p>
-        <p><strong class="text-gray-700">Stock en almacén:</strong> {{ producto.stockAlmacen }}</p>
-        <p><strong class="text-gray-700">Existencia en exhibición:</strong> {{ producto.existencia_exhibe }}</p>
-        <p><strong class="text-gray-700">Stock en exhibición:</strong> {{ producto.stock_exhibe }}</p>
-        <p><strong class="text-gray-700">Existencia en almacén:</strong> {{ producto.existencia_almacen }}</p>
+      <ng-template #noLotes>
+        <p class="text-center text-gray-600">No hay lotes registrados para este producto.</p>
+      </ng-template>
+    </div>
+
+    <!-- Historial de Precios (desplegable) -->
+    <div *ngIf="mostrarHistorialPrecios" class="precios-container bg-gray-50 p-4 rounded-lg mb-6">
+      <h3 class="text-xl font-semibold text-gray-700 mb-4">Historial de Precios</h3>
+      <div *ngIf="historialPrecios.length > 0; else noPrecios">
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+            <thead class="bg-blue-500 text-white">
+              <tr>
+                <th class="px-6 py-3 text-left text-sm font-medium uppercase">Fecha</th>
+                <th class="px-6 py-3 text-left text-sm font-medium uppercase">Precio Anterior</th>
+                <th class="px-6 py-3 text-left text-sm font-medium uppercase">Precio Nuevo</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <tr *ngFor="let historial of historialPrecios" class="hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4 text-sm text-gray-700">{{ historial.fecha_registro | date: 'dd/MM/yyyy' }}</td>
+                <td class="px-6 py-4 text-sm text-gray-700">$ {{ historial.precio_anterior }}</td>
+                <td class="px-6 py-4 text-sm text-gray-700">$ {{ historial.precio_nuevo }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-  
-      <!-- Lista de Proveedores -->
-      <div class="proveedores-container bg-gray-50 p-4 rounded-lg mb-6">
-        <h3 class="text-xl font-semibold text-gray-700 mb-4">Proveedores</h3>
-        <ul class="space-y-2">
-          <li *ngFor="let proveedor of producto.proveedores" class="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg">
-            {{ proveedor }}
-          </li>
-        </ul>
-      </div>
-  
-      <!-- Botones -->
-      <div class="flex justify-center space-x-4">
-        <button 
-          (click)="abrirModal()" 
-          class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-transform transform hover:scale-105"
-        >
-          Reabastecer
-        </button>
-        <button 
-          (click)="verHistorialPrecios()" 
-          class="bg-purple-500 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition-transform transform hover:scale-105"
-        >
-          Historial de Precios
-        </button>
-        <button 
-          (click)="volver()" 
-          class="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition-transform transform hover:scale-105"
-        >
-          Volver
-        </button>
-      </div>
+      <ng-template #noPrecios>
+        <p class="text-center text-gray-600">No hay cambios de precio registrados.</p>
+      </ng-template>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal de Reabastecimiento -->
+<div class="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20" *ngIf="mostrarModal">
+  <div class="modal-content bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+    <h3 class="text-2xl font-semibold text-gray-700 mb-4">Reabastecer Producto</h3>
+
+    <label for="cantidad" class="block text-lg font-medium text-gray-700 mb-2">Cantidad a reabastecer:</label>
+    <input 
+      id="cantidad" 
+      type="number" 
+      [(ngModel)]="cantidadReabastecer" 
+      min="1" 
+      class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+    />
+
+    <label for="fecha" class="block text-lg font-medium text-gray-700 mb-2">Fecha de caducidad:</label>
+    <input 
+      id="fecha" 
+      type="date" 
+      [(ngModel)]="fechaCaducidad" 
+      class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-6"
+    />
+
+    <div class="flex justify-end space-x-4">
+      <button 
+        (click)="confirmarReabastecimiento()" 
+        class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-transform transform hover:scale-105"
+      >
+        Confirmar
+      </button>
+      <button 
+        (click)="cerrarModal()" 
+        class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg transition-transform transform hover:scale-105"
+      >
+        Cancelar
+      </button>
     </div>
   </div>
-  
-  <!-- Modal de Reabastecimiento -->
-  <div class="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20" *ngIf="mostrarModal">
-    <div class="modal-content bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-      <h3 class="text-2xl font-semibold text-gray-700 mb-4">Reabastecer Producto</h3>
-  
-      <label for="cantidad" class="block text-lg font-medium text-gray-700 mb-2">Cantidad a reabastecer:</label>
-      <input 
-        id="cantidad" 
-        type="number" 
-        [(ngModel)]="cantidadReabastecer" 
-        min="1" 
-        class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
-      />
-  
-      <label for="fecha" class="block text-lg font-medium text-gray-700 mb-2">Fecha de caducidad:</label>
-      <input 
-        id="fecha" 
-        type="date" 
-        [(ngModel)]="fechaCaducidad" 
-        class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-6"
-      />
-  
-      <div class="flex justify-end space-x-4">
-        <button 
-          (click)="confirmarReabastecimiento()" 
-          class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-transform transform hover:scale-105"
-        >
-          Confirmar
-        </button>
-        <button 
-          (click)="cerrarModal()" 
-          class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg transition-transform transform hover:scale-105"
-        >
-          Cancelar
-        </button>
-      </div>
-    </div>
-  </div>
+</div>

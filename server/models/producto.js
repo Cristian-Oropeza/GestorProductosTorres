@@ -14,7 +14,7 @@ const productoSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  tamaño: {
+  tamano: {
     type: String,
     required: true
   },

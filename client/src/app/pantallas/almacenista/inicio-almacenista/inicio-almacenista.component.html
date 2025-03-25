@@ -1,51 +1,136 @@
 <div class="almacenista-container relative flex flex-col items-center min-h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 text-gray-900 p-4 overflow-hidden">
-    <!-- Fondo dinámico con textura sutil -->
-    <div class="absolute inset-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/diamond-upholstery.png')] opacity-10"></div>
-  
-    <!-- Barra superior con búsqueda y botón de agregar -->
-    <div class="header bg-blue-500 text-white p-4 flex justify-between items-center w-full max-w-6xl z-10 rounded-lg shadow-md mt-4">
-      <button class="exit-btn bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg" (click)="salir()">Salir</button>
+  <!-- Fondo dinámico con textura sutil -->
+  <div class="absolute inset-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/diamond-upholstery.png')] opacity-10"></div>
+
+  <!-- Barra superior con búsqueda y botón de agregar -->
+  <div class="header bg-blue-500 text-white p-4 flex justify-between items-center w-full max-w-6xl z-10 rounded-lg shadow-md mt-4">
+    <!-- Botón Salir -->
+    <button class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg" (click)="salir()">
+      Salir
+    </button>
+
+    <!-- Búsqueda básica -->
+    <div class="flex-grow mx-4">
       <input 
         type="text" 
         placeholder="Buscar producto por código o nombre..." 
         [(ngModel)]="searchQuery" 
         (input)="filtrarProductos()" 
-        class="search-input px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900 bg-white"
+        class="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900 bg-white"
       >
+    </div>
+
+    <!-- Botón Agregar producto -->
+    <button 
+      class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-lg mr-4" 
+      (click)="navigateToAgregar()"
+    >
+      Agregar producto
+    </button>
+
+    <!-- Menú desplegable -->
+    <div class="relative">
       <button 
-        class="add-btn bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-lg" 
-        (click)="navigateToAgregar()"
+        class="bg-purple-500 hover:bg-purple-700 text-white py-2 px-4 rounded-lg flex items-center"
+        (click)="toggleMenu()"
       >
-        Agregar producto
+        Opciones
+        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+
+      <!-- Menú desplegable -->
+      <div *ngIf="mostrarMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-20">
+        <button 
+          class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
+          (click)="verHistorialPrecios()"
+        >
+          Historial de Precios
+        </button>
+        <button 
+          class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
+          (click)="verHistorialLotes()"
+        >
+          Historial de Lotes
+        </button>
+        <button 
+          class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
+          (click)="toggleFiltroAvanzado()"
+        >
+          Filtro avanzado
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtro avanzado (oculto por defecto) -->
+  <div *ngIf="mostrarFiltroAvanzado" class="filtro-avanzado bg-white p-4 rounded-lg shadow-md w-full max-w-6xl mt-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Filtro por proveedor -->
+      <div>
+        <label for="proveedor" class="block text-lg font-medium text-gray-700">Proveedor:</label>
+        <select 
+          id="proveedor" 
+          [(ngModel)]="filtroProveedor" 
+          class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">Seleccione un proveedor</option>
+          <option *ngFor="let proveedor of proveedores" [value]="proveedor">{{ proveedor }}</option>
+        </select>
+      </div>
+
+      <!-- Filtro por marca -->
+      <div>
+        <label for="marca" class="block text-lg font-medium text-gray-700">Marca:</label>
+        <select 
+          id="marca" 
+          [(ngModel)]="filtroMarca" 
+          class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">Seleccione una marca</option>
+          <option *ngFor="let marca of marcas" [value]="marca">{{ marca }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Botón para aplicar el filtro avanzado -->
+    <div class="flex justify-end mt-4">
+      <button 
+        class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-lg" 
+        (click)="aplicarFiltroAvanzado()"
+      >
+        Filtrar
       </button>
     </div>
-  
-    <!-- Lista de productos en tarjetas -->
-    <div class="productos-container p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl mt-6">
-      <div class="producto-card bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-all transform hover:scale-105" 
-           *ngFor="let producto of productosFiltrados" 
-           (click)="verDetalleProducto(producto.codigo)">
-        <div class="imagen-container p-4">
-          <img [src]="producto.imagen" [alt]="producto.nombreProducto" class="producto-imagen w-full h-48 object-contain rounded-lg">
-        </div>
-        <div class="p-4">
-          <h3 class="text-xl font-semibold text-gray-800">{{ producto.nombreProducto }}</h3>
-          <p class="precio text-lg text-gray-600 mt-2">$ {{ producto.precioPieza }}</p>
-          <div class="card-actions mt-4 flex justify-between">
-            <button 
-              class="update-btn bg-yellow-500 hover:bg-yellow-700 text-white py-2 px-4 rounded-lg" 
-              (click)="actualizarProducto(producto.codigo); $event.stopPropagation()"
-            >
-              Actualizar
-            </button>
-            <button 
-              class="delete-btn bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg" 
-              (click)="eliminarProducto(producto.codigo); $event.stopPropagation()"
-            >
-              Eliminar
-            </button>
-          </div>
+  </div>
+
+  <!-- Lista de productos en tarjetas -->
+  <div class="productos-container p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl mt-6">
+    <div class="producto-card bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-all transform hover:scale-105" 
+         *ngFor="let producto of productosFiltrados" 
+         (click)="verDetalleProducto(producto.codigo_barras)">
+      <div class="imagen-container p-4">
+        <img [src]="producto.imagen" [alt]="producto.nombre_producto" class="producto-imagen w-full h-48 object-contain rounded-lg">
+      </div>
+      <div class="p-4">
+        <h3 class="text-xl font-semibold text-gray-800">{{ producto.nombre_producto }}</h3>
+        <p class="precio text-lg text-gray-600 mt-2">$ {{ producto.precio_pieza }}</p>
+        <div class="card-actions mt-4 flex justify-between">
+          <button 
+            class="update-btn bg-yellow-500 hover:bg-yellow-700 text-white py-2 px-4 rounded-lg" 
+            (click)="actualizarProducto(producto.codigo_barras); $event.stopPropagation()"
+          >
+            Actualizar
+          </button>
+          <button 
+            class="delete-btn bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg" 
+            (click)="eliminarProducto(producto.codigo_barras); $event.stopPropagation()"
+          >
+            Eliminar
+          </button>
         </div>
       </div>
     </div>
   </div>
+</div>

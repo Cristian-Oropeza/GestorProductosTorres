@@ -8,7 +8,7 @@
       Agregar Producto
     </h2>
 
-    <form #productoForm="ngForm" class="space-y-6">
+    <form #productoForm="ngForm" (ngSubmit)="guardarProducto()" class="space-y-6">
       <!-- Sección 1: Información Básica -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Código de Barras -->
@@ -18,7 +18,7 @@
             type="text" 
             id="codigo" 
             name="codigo" 
-            [(ngModel)]="producto.codigo" 
+            [(ngModel)]="producto.codigo_barras" 
             required 
             class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
@@ -31,7 +31,7 @@
             type="text" 
             id="nombre" 
             name="nombre" 
-            [(ngModel)]="producto.nombreProducto" 
+            [(ngModel)]="producto.nombre_producto" 
             required 
             class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
@@ -46,7 +46,7 @@
             [(ngModel)]="selectedMarca" 
             class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option *ngFor="let marca of marcas" [value]="marca">{{ marca }}</option>
+            <option *ngFor="let marca of marcas" [value]="marca">{{ marca.nombre}}</option>
           </select>
         </div>
 
@@ -56,14 +56,14 @@
           <select 
             id="tamano" 
             name="tamano" 
-            [(ngModel)]="producto.tamano" 
+            [(ngModel)]="selectedTamano" 
             required 
-            class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option *ngFor="let tam of tamanos" [value]="tam">{{ tam }}</option>
+            class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option *ngFor="let tam of tamanos" [ngValue]="tam">{{ tam.descripcion }}</option>
           </select>
         </div>
       </div>
+
 
       <!-- Sección 2: Proveedores (Acordeón) -->
       <div class="bg-gray-50 p-4 rounded-lg">
@@ -99,7 +99,7 @@
                     (click)="removeProveedor(prov)" 
                     class="remove-btn text-red-600 hover:text-red-800"
                   >
-                    ×
+                    <!-- Botón vacío o con íconos según preferencia -->
                   </button>
                 </li>
               </ul>
@@ -117,7 +117,7 @@
             type="number" 
             id="precioPieza" 
             name="precioPieza" 
-            [(ngModel)]="producto.precioPieza" 
+            [(ngModel)]="producto.precio_pieza" 
             required 
             class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
@@ -130,7 +130,7 @@
             type="number" 
             id="precioCaja" 
             name="precioCaja" 
-            [(ngModel)]="producto.precioCaja" 
+            [(ngModel)]="producto.precio_caja" 
             required 
             class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
@@ -143,7 +143,7 @@
             type="number" 
             id="piezasCaja" 
             name="piezasCaja" 
-            [(ngModel)]="producto.piezasCaja" 
+            [(ngModel)]="producto.piezas_caja" 
             required 
             class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
@@ -227,23 +227,23 @@
         </details>
       </div>
 
-      <!-- Botones del formulario -->
-      <div class="form-buttons flex justify-end space-x-4">
+      <!-- Botón de Enviar -->
+      <div class="text-center mt-8 space-x-4">
         <button 
           type="submit" 
-          (click)="guardarProducto()" 
           [disabled]="!productoForm.valid" 
-          class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-lg"
+          class="px-6 py-3 text-xl font-semibold text-white bg-gradient-to-r from-green-500 to-green-600 rounded-full hover:shadow-lg transition duration-300"
         >
-          Guardar
+          Agregar Producto
         </button>
+      
         <button 
           type="button" 
           (click)="cancelar()" 
-          class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg"
+          class="px-6 py-3 text-xl font-semibold text-white bg-gradient-to-r from-red-500 to-red-600 rounded-full hover:shadow-lg transition duration-300"
         >
           Cancelar
-        </button>
+        </button>       
       </div>
     </form>
   </div>

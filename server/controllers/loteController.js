@@ -34,6 +34,39 @@ const createLote = async (req, res) => {
   }
 };
 
+// @desc    Obtener todos los lotes
+// @route   GET /api/lotes
+// @access  Public
+const getLotes = async (req, res) => {
+  try {
+    const lotes = await Lote.find();
+    res.status(200).json(lotes);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Obtener lotes por código de barras (producto)
+// @route   GET /api/lotes/:codigo_barras
+// @access  Public
+const getLotesByCodigoBarras = async (req, res) => {
+  try {
+    const { codigo_barras } = req.params;
+    const lotes = await Lote.find({ codigo_barras });
+
+    if (lotes.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron lotes para este código de barras' });
+    }
+
+    res.status(200).json(lotes);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
 module.exports = {
-  createLote
+  createLote,
+  getLotes,
+  getLotesByCodigoBarras
 };

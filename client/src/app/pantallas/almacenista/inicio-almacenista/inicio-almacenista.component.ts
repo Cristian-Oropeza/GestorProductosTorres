@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ProductoService } from '../../../service/productoService';
+import { ProductoService } from '../../../service/producto.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogMensajeComponent } from '../../dialog-mensaje/dialog-mensaje.component';
+import { Producto } from '../../../models/producto';
+import { ProveedorService } from '../../../service/proveedor.service'; // Importar ProveedorService
+import { MarcaService } from '../../../service/marca.service'; // Importar MarcaService
 
 @Component({
   selector: 'app-inicio-almacenista',
@@ -10,45 +13,121 @@ import { DialogMensajeComponent } from '../../dialog-mensaje/dialog-mensaje.comp
   styleUrls: ['./inicio-almacenista.component.css']
 })
 export class InicioAlmacenistaComponent implements OnInit {
-  searchQuery: string = '';
-  productos: any[] = [];
-  productosFiltrados: any[] = [];
+  searchQuery: string = ''; // Para la búsqueda básica
+  productos: Producto[] = []; // Lista completa de productos
+  productosFiltrados: Producto[] = []; // Lista de productos filtrados
+  mostrarFiltroAvanzado: boolean = false; // Controla si se muestra el filtro avanzado
+  filtroProveedor: string = ''; // Filtro por proveedor
+  filtroMarca: string = ''; // Filtro por marca
+  proveedores: string[] = []; // Lista de proveedores
+  marcas: string[] = []; // Lista de marcas
 
   constructor(
     private router: Router,
     private productoService: ProductoService,
+    private proveedorService: ProveedorService, // Inyectar ProveedorService
+    private marcaService: MarcaService, // Inyectar MarcaService
     private dialog: MatDialog
   ) {}
 
-  ngOnInit() {
-    this.productos = this.productoService.obtenerProductos();
-    this.productosFiltrados = [...this.productos];
+  async ngOnInit() {
+    await this.cargarProductos();
+    await this.cargarProveedores();
+    await this.cargarMarcas();
   }
 
+  // Cargar todos los productos
+  async cargarProductos() {
+    try {
+      this.productos = await this.productoService.obtenerProductos();
+      this.productosFiltrados = [...this.productos];
+      console.log('Productos cargados:', this.productos);
+    } catch (error) {
+      console.error('Error al cargar productos:', error);
+    }
+  }
+
+  // Cargar proveedores
+  async cargarProveedores() {
+    try {
+      const proveedores = await this.proveedorService.getProveedores().toPromise() || [];
+      this.proveedores = proveedores.map(proveedor => proveedor.nombre_proveedor);
+      console.log('Proveedores cargados:', this.proveedores);
+    } catch (error) {
+      console.error('Error al cargar proveedores:', error);
+    }
+  }
+
+  // Cargar marcas
+  async cargarMarcas() {
+    try {
+      const marcas = await this.marcaService.getMarcas().toPromise() || [];
+      this.marcas = marcas.map(marca => marca.nombre);
+      console.log('Marcas cargadas:', this.marcas);
+    } catch (error) {
+      console.error('Error al cargar marcas:', error);
+    }
+  }
+
+  // Mostrar/ocultar el filtro avanzado
+  toggleFiltroAvanzado() {
+    this.mostrarFiltroAvanzado = !this.mostrarFiltroAvanzado;
+  }
+
+  // Aplicar el filtro avanzado
+  aplicarFiltroAvanzado() {
+    this.productosFiltrados = this.productos.filter(producto => {
+      const coincideProveedor = this.filtroProveedor ? producto.proveedores.includes(this.filtroProveedor) : true;
+      const coincideMarca = this.filtroMarca ? producto.marca === this.filtroMarca : true;
+      return coincideProveedor && coincideMarca;
+    });
+  }
+
+  // Filtrar productos por nombre o código de barras
   filtrarProductos() {
     this.productosFiltrados = this.productos.filter(producto =>
-      producto.nombre.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-      producto.codigo.includes(this.searchQuery)
+      producto.nombre_producto.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+      producto.codigo_barras.includes(this.searchQuery)
     );
   }
 
+  mostrarMenu: boolean = false; // Controla si el menú está visible
+
+  // Método para alternar la visibilidad del menú
+  toggleMenu() {
+    this.mostrarMenu = !this.mostrarMenu;
+  }
+  
+  // Navegar a la pantalla de agregar producto
   navigateToAgregar() {
     this.router.navigate(['/addProducto']);
   }
+  // Método para ver el historial de precios
+verHistorialPrecios() {
+  this.router.navigate(['/historial-precios']);
+}
 
+// Método para ver el historial de lotes
+verHistorialLotes() {
+  this.router.navigate(['/historial-lotes']);
+}
+
+  // Ver detalle de un producto
   verDetalleProducto(codigo: string) {
     if (codigo) {
       this.router.navigate(['/detalleProducto', codigo]);
     }
   }
 
+  // Actualizar un producto
   actualizarProducto(codigo: string) {
     if (codigo) {
       this.router.navigate(['/actualizarProducto', codigo]);
     }
   }
 
-  eliminarProducto(codigo: string) {
+  // Eliminar un producto
+  async eliminarProducto(codigo: string) {
     const dialogRef = this.dialog.open(DialogMensajeComponent, {
       width: '400px',
       disableClose: true,
@@ -61,15 +140,21 @@ export class InicioAlmacenistaComponent implements OnInit {
       }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        this.productos = this.productos.filter(producto => producto.codigo !== codigo);
-        this.productosFiltrados = this.productos;
-        console.log(`Producto con código ${codigo} eliminado.`);
+        try {
+          await this.productoService.eliminarProducto(codigo);
+          this.productos = this.productos.filter(producto => producto.codigo_barras !== codigo);
+          this.productosFiltrados = this.productosFiltrados.filter(producto => producto.codigo_barras !== codigo);
+          console.log(`Producto con código ${codigo} eliminado.`);
+        } catch (error) {
+          console.error('Error al eliminar el producto:', error);
+        }
       }
     });
   }
 
+  // Salir de la aplicación
   salir() {
     this.router.navigate(['/']);
   }

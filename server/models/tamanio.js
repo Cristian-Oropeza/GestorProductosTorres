@@ -8,7 +8,8 @@ const tamanioSchema = mongoose.Schema({
     trim: true
   }
 }, {
-  timestamps: true
+  timestamps: true,
+  collection: 'tamanio' // Especifica el nombre de la colección
 });
 
 module.exports = mongoose.model('Tamanio', tamanioSchema);

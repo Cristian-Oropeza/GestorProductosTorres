@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+/* import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProductoService } from '../../../service/productoService'; // Importar ProductoService
 import { MatDialog } from '@angular/material/dialog';
@@ -48,3 +48,4 @@ export class InicioRepositorComponent implements OnInit {
     this.router.navigate([' ']);
   }
 }
+ */

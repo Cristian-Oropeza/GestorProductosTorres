@@ -18,7 +18,7 @@
               type="text" 
               id="codigo" 
               name="codigo" 
-              [(ngModel)]="producto.codigo" 
+              [(ngModel)]="producto.codigo_barras" 
               readonly 
               class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-not-allowed"
             >
@@ -31,7 +31,7 @@
               type="text" 
               id="nombre" 
               name="nombre" 
-              [(ngModel)]="producto.nombreProducto" 
+              [(ngModel)]="producto.nombre_producto" 
               readonly 
               class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-not-allowed"
             >
@@ -83,7 +83,7 @@
               type="number" 
               id="precioPieza" 
               name="precioPieza" 
-              [(ngModel)]="producto.precioPieza" 
+              [(ngModel)]="producto.precio_pieza" 
               required 
               class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
@@ -96,7 +96,7 @@
               type="number" 
               id="precioCaja" 
               name="precioCaja" 
-              [(ngModel)]="producto.precioCaja" 
+              [(ngModel)]="producto.precio_caja" 
               readonly 
               class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-not-allowed"
             >
@@ -134,14 +134,14 @@
             type="submit" 
             (click)="actualizarProducto()" 
             [disabled]="!updateForm.valid" 
-            class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-transform transform hover:scale-105"
+            class="px-6 py-3 text-xl font-semibold text-white bg-gradient-to-r from-green-500 to-green-600 rounded-full hover:shadow-lg transition duration-300"
           >
             Actualizar
           </button>
           <button 
             type="button" 
             (click)="cancelar()" 
-            class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg transition-transform transform hover:scale-105"
+            class="px-6 py-3 text-xl font-semibold text-white bg-gradient-to-r from-red-500 to-red-600 rounded-full hover:shadow-lg transition duration-300"
           >
             Cancelar
           </button>

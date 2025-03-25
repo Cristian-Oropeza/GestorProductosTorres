@@ -8,12 +8,13 @@ import { AddProductosComponent } from './pantallas/almacenista/add-productos/add
 import { ActualizarProductoComponent } from './pantallas/almacenista/actualizar-producto/actualizar-producto.component';
 import { DetalleProductoComponent } from './pantallas/almacenista/detalle-producto/detalle-producto.component';
 
-import { InicioRepositorComponent } from './pantallas/repositor/inicio-repositor/inicio-repositor.component';
-import { DetalleProductoRepositorComponent } from './pantallas/repositor/detalle-producto-repositor/detalle-producto-repositor.component';
+//import { InicioRepositorComponent } from './pantallas/repositor/inicio-repositor/inicio-repositor.component';
+//import { DetalleProductoRepositorComponent } from './pantallas/repositor/detalle-producto-repositor/detalle-producto-repositor.component';
 
-import { InicioClienteComponent } from './pantallas/inicio-cliente/inicio-cliente.component';
+//import { InicioClienteComponent } from './pantallas/inicio-cliente/inicio-cliente.component';
 
-
+import { HistorialLotesComponent } from './pantallas/historial-lotes/historial-lotes.component';
+import { HistorialPreciosComponent } from './pantallas/historial-precios/historial-precios.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -22,12 +23,15 @@ const routes: Routes = [
   { path: 'actualizarProducto/:codigo', component: ActualizarProductoComponent },
   { path: 'detalleProducto/:codigo', component: DetalleProductoComponent },  
   
-  { path: 'inicioRepositor', component: InicioRepositorComponent },
-  { path: 'detalleProductoRepositor/:codigo', component: DetalleProductoRepositorComponent },
+  //{ path: 'inicioRepositor', component: InicioRepositorComponent },
+  //{ path: 'detalleProductoRepositor/:codigo', component: DetalleProductoRepositorComponent },
 
 
-  { path: 'inicioCliente', component: InicioClienteComponent },
- 
+  //{ path: 'inicioCliente', component: InicioClienteComponent },
+
+    { path: 'historial-precios', component: HistorialPreciosComponent },
+    { path: 'historial-lotes', component: HistorialLotesComponent },
+    
 
   { path: '**', redirectTo: '' }
 ];

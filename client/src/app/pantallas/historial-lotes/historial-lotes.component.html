@@ -1,0 +1,43 @@
+<div class="min-h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 p-6">
+    <div class="max-w-6xl mx-auto bg-white rounded-lg shadow-lg p-6">
+      <!-- Título centrado -->
+      <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Historial de Lotes</h1>
+  
+      <!-- Tabla de lotes -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+          <thead class="bg-blue-500 text-white">
+            <tr>
+              <th class="px-6 py-3 text-left text-sm font-medium uppercase">Código de Barras</th>
+              <th class="px-6 py-3 text-left text-sm font-medium uppercase">Nombre del Producto</th>
+              <th class="px-6 py-3 text-left text-sm font-medium uppercase">Cantidad</th>
+              <th class="px-6 py-3 text-left text-sm font-medium uppercase">Fecha de Caducidad</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <tr *ngFor="let lote of lotes" class="hover:bg-gray-50 transition-colors">
+              <td class="px-6 py-4 text-sm text-gray-700">{{ lote.codigo_barras }}</td>
+              <td class="px-6 py-4 text-sm text-gray-700">{{ lote.nombre_producto }}</td>
+              <td class="px-6 py-4 text-sm text-gray-700">{{ lote.cantidad }}</td>
+              <td class="px-6 py-4 text-sm text-gray-700">{{ lote.fecha_caducidad | date: 'dd/MM/yyyy' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  
+      <!-- Mensaje si no hay lotes -->
+      <div *ngIf="lotes.length === 0" class="mt-6 text-center text-gray-600">
+        No hay lotes registrados.
+      </div>
+  
+      <!-- Botón para volver -->
+      <div class="mt-6 text-center">
+        <button 
+          class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition duration-300 transform hover:scale-105"
+          (click)="volver()"
+        >
+          Volver
+        </button>
+      </div>
+    </div>
+  </div>
