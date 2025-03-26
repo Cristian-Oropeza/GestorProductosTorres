@@ -158,4 +158,9 @@ verHistorialLotes() {
   salir() {
     this.router.navigate(['/']);
   }
+
+  validarBusqueda(valor: string) {
+    // Eliminar caracteres especiales, dejando solo letras, números y espacios
+    this.searchQuery = valor.replace(/[^a-zA-Z0-9\s]/g, '');
+  }
 }
