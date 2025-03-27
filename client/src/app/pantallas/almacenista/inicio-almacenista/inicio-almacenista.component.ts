@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+
 import { ProductoService } from '../../../service/producto.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogMensajeComponent } from '../../dialog-mensaje/dialog-mensaje.component';
 import { Producto } from '../../../models/producto';
 import { ProveedorService } from '../../../service/proveedor.service'; // Importar ProveedorService
 import { MarcaService } from '../../../service/marca.service'; // Importar MarcaService
-
+import { Proveedor } from '../../../models/proveedor';
+import { Marca } from '../../../models/marca';
+import { BrowserModule } from '@angular/platform-browser';
 @Component({
   selector: 'app-inicio-almacenista',
   templateUrl: './inicio-almacenista.component.html',
@@ -19,8 +22,8 @@ export class InicioAlmacenistaComponent implements OnInit {
   mostrarFiltroAvanzado: boolean = false; // Controla si se muestra el filtro avanzado
   filtroProveedor: string = ''; // Filtro por proveedor
   filtroMarca: string = ''; // Filtro por marca
-  proveedores: string[] = []; // Lista de proveedores
-  marcas: string[] = []; // Lista de marcas
+  proveedores: Proveedor[] = [];
+  marcas: Marca[] = [];
 
   constructor(
     private router: Router,
@@ -30,12 +33,20 @@ export class InicioAlmacenistaComponent implements OnInit {
     private dialog: MatDialog
   ) {}
 
-  async ngOnInit() {
-    await this.cargarProductos();
-    await this.cargarProveedores();
-    await this.cargarMarcas();
+  ngOnInit() {
+    this.inicializarDatos();
   }
-
+  
+  inicializarDatos() {
+    this.cargarProductos();
+    this.cargarProveedores();
+    this.cargarMarcas();
+    
+    // Reiniciar filtros
+    this.filtroProveedor = '';
+    this.filtroMarca = '';
+    this.searchQuery = '';
+  }
   // Cargar todos los productos
   async cargarProductos() {
     try {
@@ -48,25 +59,26 @@ export class InicioAlmacenistaComponent implements OnInit {
   }
 
   // Cargar proveedores
-  async cargarProveedores() {
-    try {
-      const proveedores = await this.proveedorService.getProveedores().toPromise() || [];
-      this.proveedores = proveedores.map(proveedor => proveedor.nombre_proveedor);
-      console.log('Proveedores cargados:', this.proveedores);
-    } catch (error) {
-      console.error('Error al cargar proveedores:', error);
-    }
+  cargarProveedores() {
+    this.proveedorService.getProveedores().subscribe({
+      next: (proveedores) => {
+        this.proveedores = proveedores;
+        console.log('Proveedores cargados:', proveedores);
+        console.log('Primer proveedor:', proveedores[0]); // Muestra la estructura del primer proveedor
+      },
+      error: (error) => console.error('Error al cargar proveedores:', error)
+    });
   }
 
-  // Cargar marcas
-  async cargarMarcas() {
-    try {
-      const marcas = await this.marcaService.getMarcas().toPromise() || [];
-      this.marcas = marcas.map(marca => marca.nombre);
-      console.log('Marcas cargadas:', this.marcas);
-    } catch (error) {
-      console.error('Error al cargar marcas:', error);
-    }
+  cargarMarcas() {
+    this.marcaService.getMarcas().subscribe({
+      next: (marcas) => {
+        this.marcas = marcas;
+        console.log('Marcas cargadas:', marcas);
+        console.log('Primera marca:', marcas[0]); // Muestra la estructura de la primera marca
+      },
+      error: (error) => console.error('Error al cargar marcas:', error)
+    });
   }
 
   // Mostrar/ocultar el filtro avanzado
@@ -77,18 +89,32 @@ export class InicioAlmacenistaComponent implements OnInit {
   // Aplicar el filtro avanzado
   aplicarFiltroAvanzado() {
     this.productosFiltrados = this.productos.filter(producto => {
-      const coincideProveedor = this.filtroProveedor ? producto.proveedores.includes(this.filtroProveedor) : true;
-      const coincideMarca = this.filtroMarca ? producto.marca === this.filtroMarca : true;
+      const coincideProveedor = !this.filtroProveedor || 
+        (producto.proveedores && producto.proveedores.some(
+          proveedor => proveedor === this.filtroProveedor
+        ));
+      
+      const coincideMarca = !this.filtroMarca || 
+        producto.marca === this.filtroMarca;
+      
       return coincideProveedor && coincideMarca;
     });
   }
-
-  // Filtrar productos por nombre o código de barras
+  
   filtrarProductos() {
-    this.productosFiltrados = this.productos.filter(producto =>
-      producto.nombre_producto.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-      producto.codigo_barras.includes(this.searchQuery)
-    );
+    if (!this.searchQuery) {
+      this.productosFiltrados = [...this.productos];
+    } else {
+      this.productosFiltrados = this.productos.filter(producto =>
+        producto.nombre_producto.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        producto.codigo_barras.includes(this.searchQuery)
+      );
+    }
+    
+    // Re-apply advanced filters after basic search
+    if (this.filtroProveedor || this.filtroMarca) {
+      this.aplicarFiltroAvanzado();
+    }
   }
 
   mostrarMenu: boolean = false; // Controla si el menú está visible

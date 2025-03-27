@@ -1,26 +1,21 @@
-<div class="almacenista-container relative flex flex-col items-center min-h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 text-gray-900 p-4 overflow-hidden">
-  <!-- Fondo dinámico con textura sutil -->
-  <div class="absolute inset-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/diamond-upholstery.png')] opacity-10"></div>
-
-  <!-- Barra superior con búsqueda y botón de agregar -->
-  <div class="header bg-blue-500 text-white p-4 flex justify-between items-center w-full max-w-6xl z-10 rounded-lg shadow-md mt-4">
+<div class="w-full flex flex-col bg-transparent z-20">
+  <!-- Barra de navegación -->
+  <div class="bg-blue-500 text-white p-4 flex items-center w-full max-w-screen-lg mx-auto rounded-lg shadow-md fixed top-0 left-0 right-0 z-30">
     <!-- Botón Salir -->
-    <button class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg" (click)="salir()">
-      Salir
-    </button>
+    <button class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg" (click)="salir()">Salir</button>
 
-    <!-- Búsqueda básica -->
+    <!-- Campo de búsqueda -->
     <div class="flex-grow mx-4">
       <input 
         type="text" 
-        placeholder="Buscar producto por código o nombre..." 
+        placeholder="Buscar producto..." 
         [(ngModel)]="searchQuery" 
         (input)="filtrarProductos()" 
         class="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900 bg-white"
       >
     </div>
 
-    <!-- Botón Agregar producto -->
+    <!-- Botón para agregar producto -->
     <button 
       class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-lg mr-4" 
       (click)="navigateToAgregar()"
@@ -28,7 +23,7 @@
       Agregar producto
     </button>
 
-    <!-- Menú desplegable -->
+    <!-- Menú de opciones con filtro avanzado -->
     <div class="relative">
       <button 
         class="bg-purple-500 hover:bg-purple-700 text-white py-2 px-4 rounded-lg flex items-center"
@@ -40,73 +35,62 @@
         </svg>
       </button>
 
-      <!-- Menú desplegable -->
-      <div *ngIf="mostrarMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-20">
-        <button 
-          class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
-          (click)="verHistorialPrecios()"
-        >
+      <!-- Contenido del menú -->
+      <div *ngIf="mostrarMenu" class="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-20 p-4">
+        <button class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white" (click)="verHistorialPrecios()">
           Historial de Precios
         </button>
-        <button 
-          class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
-          (click)="verHistorialLotes()"
-        >
+        <button class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white" (click)="verHistorialLotes()">
           Historial de Lotes
         </button>
-        <button 
-          class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
-          (click)="toggleFiltroAvanzado()"
-        >
+        <button class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white" (click)="toggleFiltroAvanzado()">
           Filtro avanzado
         </button>
+
+        <!-- Sección de filtro avanzado -->
+        <div *ngIf="mostrarFiltroAvanzado" class="mt-4 space-y-4">
+          <div class="bg-white shadow-lg p-4 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4">Filtros Avanzados</h3>
+
+            <div class="space-y-4">
+              <!-- Filtro Proveedor -->
+              <mat-form-field appearance="fill" class="w-full">
+                <mat-label>Proveedor</mat-label>
+                <mat-select [(ngModel)]="filtroProveedor">
+                  <mat-option value="">Todos</mat-option>
+                  <mat-option *ngFor="let proveedor of proveedores" [value]="proveedor.nombre_proveedor">
+                    {{ proveedor.nombre_proveedor }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <!-- Filtro Marca -->
+              <mat-form-field appearance="fill" class="w-full">
+                <mat-label>Marca</mat-label>
+                <mat-select [(ngModel)]="filtroMarca">
+                  <mat-option value="">Todas</mat-option>
+                  <mat-option *ngFor="let marca of marcas" [value]="marca.nombre">
+                    {{ marca.nombre }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <div class="flex justify-end">
+                <button 
+                  class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-6 rounded-lg"
+                  (click)="aplicarFiltroAvanzado()">
+                  Filtrar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Filtro avanzado (oculto por defecto) -->
-  <div *ngIf="mostrarFiltroAvanzado" class="filtro-avanzado bg-white p-4 rounded-lg shadow-md w-full max-w-6xl mt-4">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <!-- Filtro por proveedor -->
-      <div>
-        <label for="proveedor" class="block text-lg font-medium text-gray-700">Proveedor:</label>
-        <select 
-          id="proveedor" 
-          [(ngModel)]="filtroProveedor" 
-          class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">Seleccione un proveedor</option>
-          <option *ngFor="let proveedor of proveedores" [value]="proveedor">{{ proveedor }}</option>
-        </select>
-      </div>
-
-      <!-- Filtro por marca -->
-      <div>
-        <label for="marca" class="block text-lg font-medium text-gray-700">Marca:</label>
-        <select 
-          id="marca" 
-          [(ngModel)]="filtroMarca" 
-          class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">Seleccione una marca</option>
-          <option *ngFor="let marca of marcas" [value]="marca">{{ marca }}</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Botón para aplicar el filtro avanzado -->
-    <div class="flex justify-end mt-4">
-      <button 
-        class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-lg" 
-        (click)="aplicarFiltroAvanzado()"
-      >
-        Filtrar
-      </button>
-    </div>
-  </div>
-
-  <!-- Lista de productos en tarjetas -->
-  <div class="productos-container p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl mt-6">
+  <!-- Contenedor de productos -->
+  <div class="productos-container p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl mx-auto mt-32 overflow-auto">
     <div class="producto-card bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-all transform hover:scale-105" 
          *ngFor="let producto of productosFiltrados" 
          (click)="verDetalleProducto(producto.codigo_barras)">

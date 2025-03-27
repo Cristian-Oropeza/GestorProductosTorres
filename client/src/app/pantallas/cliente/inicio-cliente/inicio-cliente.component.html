@@ -79,7 +79,7 @@
     <div class="productos-container p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl mx-auto mt-20"> <!-- Añadí mx-auto y ajusté mt-20 -->
       <div 
         *ngFor="let producto of productosFiltrados" 
-        (click)="verDetalleProducto(producto.codigo_barras)"
+        (click)="verDetalleProductoC(producto.codigo_barras)"
         class="producto-card bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-all transform hover:scale-105 cursor-pointer flex flex-col justify-between mx-auto w-full max-w-xs" 
       >
         <!-- Imagen del Producto -->
@@ -95,7 +95,7 @@
         <div class="p-4">
           <h3 class="text-xl font-semibold text-gray-800 text-center">{{ producto.nombre_producto }}</h3> <!-- Añadí text-center -->
           <p class="text-lg text-gray-600 mt-2 text-center">Precio: {{ producto.precio_pieza | currency }}</p> <!-- Añadí text-center -->
-          <p class="text-sm text-gray-500 text-center">Productos en estante: {{ producto.existencia_exhibe }}</p> <!-- Añadí text-center -->
+          <p class="text-sm text-gray-500 text-center">Cantidad de productos: {{ producto.existencia_exhibe }}</p> <!-- Añadí text-center -->
         </div>
       </div>
   </div>

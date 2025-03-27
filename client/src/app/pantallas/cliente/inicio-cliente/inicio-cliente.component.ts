@@ -1,19 +1,21 @@
-  import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core'; 
+ import { OnInit } from '@angular/core';
   import { Router } from '@angular/router';
-  import { ProductoService } from '../../../service/producto.service';
-  import { MatDialog } from '@angular/material/dialog';
-  import { DialogMensajeComponent } from '../../dialog-mensaje/dialog-mensaje.component';
-  import { Producto } from '../../../models/producto';
+import { ProductoService } from '../../../service/producto.service';  
+import { MatDialog } from '@angular/material/dialog';
+import { DialogMensajeComponent } from '../../dialog-mensaje/dialog-mensaje.component';  
+import { Producto } from '../../../models/producto';
   import { ProveedorService } from '../../../service/proveedor.service'; // Importar ProveedorService
   import { MarcaService } from '../../../service/marca.service'; // Importar MarcaService
   import { Proveedor } from '../../../models/proveedor';
   import { Marca } from '../../../models/marca';
   @Component({
-    selector: 'app-inicio-repositor',
-    templateUrl: './inicio-repositor.component.html',
-    styleUrls: ['./inicio-repositor.component.css']
+    selector: 'app-inicio-cliente',
+    templateUrl: './inicio-cliente.component.html',
+    styleUrl: './inicio-cliente.component.css'
   })
-  export class InicioRepositorComponent implements OnInit {
+  export class InicioClienteComponent {
+    
     searchQuery: string = ''; // Para la búsqueda básica
     productos: Producto[] = []; // Lista completa de productos
     productosFiltrados: Producto[] = []; // Lista de productos filtrados
@@ -123,28 +125,15 @@
       this.mostrarMenu = !this.mostrarMenu;
     }
     
-    // Navegar a la pantalla de agregar producto
-    navigateToAgregar() {
-      this.router.navigate(['/addProducto']);
-    }
-    // Método para ver el historial de precios
-  verHistorialPrecios() {
-    this.router.navigate(['/historial-precios']);
-  }
-  
-  // Método para ver el historial de lotes
-  verHistorialLotes() {
-    this.router.navigate(['/historial-lotes']);
-  }
-  
+
     // Ver detalle de un producto
-    verDetalleProducto(codigo: string) {
+    verDetalleProductoC(codigo: string) {
       if (codigo) {
-        this.router.navigate(['/detalleProductoRepositor', codigo]);
+        this.router.navigate(['/detalleCliente', codigo]);
       }
     }
   
- 
+
     // Salir de la aplicación
     salir() {
       this.router.navigate(['/']);

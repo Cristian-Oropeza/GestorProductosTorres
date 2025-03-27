@@ -56,9 +56,7 @@ export class DetalleProductoComponent implements OnInit {
           this.router.navigate(['/inicioAlmacenista']);
         }
       }
-    });
-    
-    
+    }); 
   }
 
   async cargarHistorialPrecios() {
@@ -93,10 +91,10 @@ export class DetalleProductoComponent implements OnInit {
   async confirmarReabastecimiento() {
     if (this.producto && this.cantidadReabastecer > 0 && this.fechaCaducidad) {
       try {
-        // Actualizar el stock en el producto
-        const nuevoStock = this.producto.stock_almacen + this.cantidadReabastecer;
+        // Actualizar existencia_almacen en el producto
+        const nuevaExistencia = this.producto.existencia_almacen + this.cantidadReabastecer;
         await this.productoService.actualizarProducto(this.producto.codigo_barras, {
-          stock_almacen: nuevoStock
+          existencia_almacen: nuevaExistencia // Cambiar stock_almacen por existencia_almacen
         });
   
         // Registrar el lote
@@ -109,10 +107,10 @@ export class DetalleProductoComponent implements OnInit {
         await this.loteService.crearLote(nuevoLote).toPromise();
   
         // Actualizar el producto localmente
-        this.producto.stock_almacen = nuevoStock;
+        this.producto.existencia_almacen = nuevaExistencia;
   
         // Recargar los lotes para reflejar el nuevo lote
-        await this.cargarLotes(); // <-- Añadir esta línea
+        await this.cargarLotes();
   
         // Mostrar mensaje de éxito
         this.dialog.open(DialogMensajeComponent, {
@@ -122,7 +120,7 @@ export class DetalleProductoComponent implements OnInit {
           panelClass: 'custom-dialog-container',
           data: {
             titulo: 'Stock Actualizado',
-            mensaje: `El stock del producto se ha actualizado a ${nuevoStock}.`
+            mensaje: `El stock del producto se ha actualizado a ${nuevaExistencia}.`
           }
         });
   
@@ -154,7 +152,7 @@ export class DetalleProductoComponent implements OnInit {
       });
     }
   }
-
+  
   volver() {
     this.router.navigate(['/inicioAlmacenista']);
   }

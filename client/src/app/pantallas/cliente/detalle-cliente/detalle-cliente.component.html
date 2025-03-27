@@ -22,28 +22,13 @@
         <p><strong class="text-gray-700">Precio por pieza:</strong> {{ producto.precio_pieza  }}</p>
         <p><strong class="text-gray-700">Precio por caja:</strong> {{ producto.precio_caja }}</p>
         <p><strong class="text-gray-700">Piezas por caja:</strong> {{ producto.piezas_caja }}</p>
-        <p><strong class="text-gray-700">Existencia en almacén:</strong> {{ producto.existencia_almacen }}</p>
-        <p><strong class="text-gray-700">Existencia en estante:</strong> {{ producto.existencia_exhibe }}</p>
+        <p><strong class="text-gray-700">Productos disponibles:</strong> {{ producto.existencia_exhibe }}</p>
       </div>
   
-      <!-- Lista de Proveedores -->
-      <div class="proveedores-container bg-gray-50 p-4 rounded-lg mb-6">
-        <h3 class="text-xl font-semibold text-gray-700 mb-4">Proveedores</h3>
-        <ul class="space-y-2">
-          <li *ngFor="let proveedor of producto.proveedores" class="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg">
-            {{ proveedor }}
-          </li>
-        </ul>
-      </div>
-  
+
       <!-- Botones -->
       <div class="flex justify-center space-x-4">
-        <button 
-          (click)="abrirModal()" 
-          class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-transform transform hover:scale-105"
-        >
-          Mover al Estante
-        </button>
+
         <button 
           (click)="volver()" 
           class="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition-transform transform hover:scale-105"
@@ -54,33 +39,3 @@
     </div>
   </div>
   
-  <!-- Modal de Reabastecimiento -->
-  <div class="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20" *ngIf="mostrarModal">
-    <div class="modal-content bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-      <h3 class="text-2xl font-semibold text-gray-700 mb-4">Mover al Estante</h3>
-  
-      <label for="cantidad" class="block text-lg font-medium text-gray-700 mb-2">Cantidad a mover:</label>
-      <input 
-        id="cantidad" 
-        type="number" 
-        [(ngModel)]="cantidadReabastecer" 
-        min="1" 
-        class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
-      />
-  
-      <div class="flex justify-end space-x-4">
-        <button 
-          (click)="confirmarReabastecimiento()" 
-          class="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-transform transform hover:scale-105"
-        >
-          Confirmar
-        </button>
-        <button 
-          (click)="cerrarModal()" 
-          class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg transition-transform transform hover:scale-105"
-        >
-          Cancelar
-        </button>
-      </div>
-    </div>
-  </div>

@@ -5,11 +5,11 @@ import { ProductoService } from '../../../service/producto.service';
 import { DialogMensajeComponent } from '../../dialog-mensaje/dialog-mensaje.component';
 import { Producto } from '../../../models/producto';
 @Component({
-  selector: 'app-detalle-producto-repositor',
-  templateUrl: './detalle-producto-repositor.component.html',
-  styleUrls: ['./detalle-producto-repositor.component.css']
+  selector: 'app-detalle-cliente',
+  templateUrl: './detalle-cliente.component.html',
+  styleUrl: './detalle-cliente.component.css'
 })
-export class DetalleProductoRepositorComponent implements OnInit {
+export class DetalleClienteComponent {
   productoCodigo: string = ''; // Evita el error de null
   producto: Producto | null = null; // Usamos la interfaz
   mostrarModal: boolean = false;
@@ -121,7 +121,6 @@ export class DetalleProductoRepositorComponent implements OnInit {
     }
   }
 
-  
   volver() {
     this.router.navigate(['/inicioRepositor']);
   }
