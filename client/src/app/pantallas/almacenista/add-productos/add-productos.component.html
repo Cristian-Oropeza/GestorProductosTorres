@@ -1,8 +1,4 @@
 <div class="almacenista-container relative flex flex-col items-center min-h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 text-gray-900 p-4 overflow-hidden">
-  <!-- Fondo dinámico con textura sutil -->
-  <div class="absolute inset-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/diamond-upholstery.png')] opacity-10"></div>
-
-  <!-- Contenedor del formulario -->
   <div class="form-container bg-white p-8 rounded-lg shadow-lg w-full max-w-6xl z-10 mt-8">
     <h2 class="text-3xl font-extrabold text-center bg-gradient-to-r from-blue-600 via-purple-500 to-pink-400 text-transparent bg-clip-text mb-6">
       Agregar Producto
@@ -19,9 +15,20 @@
             id="codigo" 
             name="codigo" 
             [(ngModel)]="producto.codigo_barras" 
+            #codigoInput="ngModel"
             required 
+            pattern="^[0-9]{1,10}$"
+            maxlength="10"
             class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
+          <div *ngIf="codigoInput.invalid && (codigoInput.dirty || codigoInput.touched)" class="text-red-600 mt-2">
+            <div *ngIf="codigoInput.errors?.['required']">
+              El código de barras es obligatorio.
+            </div>
+            <div *ngIf="codigoInput.errors?.['pattern']">
+              Solo se permiten números. Máximo 10 dígitos.
+            </div>
+          </div>
         </div>
 
         <!-- Nombre del Producto -->
@@ -32,12 +39,30 @@
             id="nombre" 
             name="nombre" 
             [(ngModel)]="producto.nombre_producto" 
+            #nombreInput="ngModel"
             required 
+            minlength="3"
+            maxlength="50"
+            pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]+$"
             class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
+          <div *ngIf="nombreInput.invalid && (nombreInput.dirty || nombreInput.touched)" class="text-red-600 mt-2">
+            <div *ngIf="nombreInput.errors?.['required']">
+              El nombre del producto es obligatorio.
+            </div>
+            <div *ngIf="nombreInput.errors?.['minlength']">
+              El nombre debe tener al menos 3 caracteres.
+            </div>
+            <div *ngIf="nombreInput.errors?.['maxlength']">
+              El nombre no puede exceder 50 caracteres.
+            </div>
+            <div *ngIf="nombreInput.errors?.['pattern']">
+              Solo se permiten letras, números y espacios.
+            </div>
+          </div>
         </div>
 
-        <!-- Marca -->
+        <!-- Marca (sin validaciones especiales) -->
         <div>
           <label for="marca" class="block text-lg font-medium text-gray-700">Marca:</label>
           <select 
@@ -50,7 +75,7 @@
           </select>
         </div>
 
-        <!-- Tamaño -->
+        <!-- Tamaño (sin validaciones especiales) -->
         <div>
           <label for="tamano" class="block text-lg font-medium text-gray-700">Tamaño:</label>
           <select 
@@ -64,50 +89,6 @@
         </div>
       </div>
 
-
-      <!-- Sección 2: Proveedores (Acordeón) -->
-      <div class="bg-gray-50 p-4 rounded-lg">
-        <details class="group">
-          <summary class="flex justify-between items-center cursor-pointer">
-            <span class="text-lg font-medium text-gray-700">Proveedores</span>
-            <svg class="w-6 h-6 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </summary>
-          <div class="mt-4 space-y-4">
-            <!-- Selección de Proveedor -->
-            <div>
-              <label for="proveedor" class="block text-lg font-medium text-gray-700">Agregar Proveedor:</label>
-              <select 
-                id="proveedor" 
-                name="proveedor" 
-                [(ngModel)]="selectedProveedor" 
-                (change)="addProveedor()" 
-                class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option *ngFor="let prov of proveedores" [value]="prov">{{ prov }}</option>
-              </select>
-            </div>
-
-            <!-- Proveedores Seleccionados -->
-            <div class="selected-providers">
-              <ul class="space-y-2">
-                <li *ngFor="let prov of producto.proveedores" class="selected-provider bg-blue-100 text-blue-800 px-4 py-2 rounded-lg flex justify-between items-center">
-                  <span>{{ prov }}</span>
-                  <button 
-                    type="button" 
-                    (click)="removeProveedor(prov)" 
-                    class="remove-btn text-red-600 hover:text-red-800"
-                  >
-                    <!-- Botón vacío o con íconos según preferencia -->
-                  </button>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </details>
-      </div>
-
       <!-- Sección 3: Precios y Existencias -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Precio por pieza -->
@@ -118,9 +99,23 @@
             id="precioPieza" 
             name="precioPieza" 
             [(ngModel)]="producto.precio_pieza" 
+            #precioPiezaInput="ngModel"
             required 
+            min="0"
+            max="100000"
             class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
+          <div *ngIf="precioPiezaInput.invalid && (precioPiezaInput.dirty || precioPiezaInput.touched)" class="text-red-600 mt-2">
+            <div *ngIf="precioPiezaInput.errors?.['required']">
+              El precio por pieza es obligatorio.
+            </div>
+            <div *ngIf="precioPiezaInput.errors?.['min']">
+              El precio no puede ser negativo.
+            </div>
+            <div *ngIf="precioPiezaInput.errors?.['max']">
+              El precio es demasiado alto.
+            </div>
+          </div>
         </div>
 
         <!-- Precio por caja -->
@@ -131,9 +126,23 @@
             id="precioCaja" 
             name="precioCaja" 
             [(ngModel)]="producto.precio_caja" 
+            #precioCajaInput="ngModel"
             required 
+            min="0"
+            max="500000"
             class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
+          <div *ngIf="precioCajaInput.invalid && (precioCajaInput.dirty || precioCajaInput.touched)" class="text-red-600 mt-2">
+            <div *ngIf="precioCajaInput.errors?.['required']">
+              El precio por caja es obligatorio.
+            </div>
+            <div *ngIf="precioCajaInput.errors?.['min']">
+              El precio no puede ser negativo.
+            </div>
+            <div *ngIf="precioCajaInput.errors?.['max']">
+              El precio es demasiado alto.
+            </div>
+          </div>
         </div>
 
         <!-- Piezas por caja -->
@@ -144,12 +153,26 @@
             id="piezasCaja" 
             name="piezasCaja" 
             [(ngModel)]="producto.piezas_caja" 
+            #piezasCajaInput="ngModel"
             required 
+            min="1"
+            max="1000"
             class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
+          <div *ngIf="piezasCajaInput.invalid && (piezasCajaInput.dirty || piezasCajaInput.touched)" class="text-red-600 mt-2">
+            <div *ngIf="piezasCajaInput.errors?.['required']">
+              Las piezas por caja son obligatorias.
+            </div>
+            <div *ngIf="piezasCajaInput.errors?.['min']">
+              Debe haber al menos 1 pieza por caja.
+            </div>
+            <div *ngIf="piezasCajaInput.errors?.['max']">
+              No se pueden tener más de 1000 piezas por caja.
+            </div>
+          </div>
         </div>
 
-        <!-- URL de la Imagen -->
+        <!-- URL de la Imagen (opcional, pero con validación de formato) -->
         <div>
           <label for="imagen" class="block text-lg font-medium text-gray-700">URL de la Imagen:</label>
           <input 
@@ -157,93 +180,127 @@
             id="imagen" 
             name="imagen" 
             [(ngModel)]="producto.imagen" 
+            #imagenInput="ngModel"
+            pattern="^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$"
             class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
+          <div *ngIf="imagenInput.invalid && (imagenInput.dirty || imagenInput.touched)" class="text-red-600 mt-2">
+            <div *ngIf="imagenInput.errors?.['pattern']">
+              Ingrese una URL válida.
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Sección 4: Existencias y Stock (Acordeón) -->
-      <div class="bg-gray-50 p-4 rounded-lg">
-        <details class="group">
-          <summary class="flex justify-between items-center cursor-pointer">
-            <span class="text-lg font-medium text-gray-700">Existencias y Stock</span>
-            <svg class="w-6 h-6 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </summary>
-          <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Existencia en Exhibición -->
-            <div>
-              <label for="existencia_exhibe" class="block text-lg font-medium text-gray-700">Existencia en Exhibición:</label>
-              <input 
-                type="number" 
-                id="existencia_exhibe" 
-                name="existencia_exhibe" 
-                [(ngModel)]="producto.existencia_exhibe" 
-                required 
-                class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
+      <!-- Sección 4: Existencias y Stock -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Existencia en Exhibición -->
+        <div>
+          <label for="existencia_exhibe" class="block text-lg font-medium text-gray-700">Existencia en Exhibición:</label>
+          <input 
+            type="number" 
+            id="existencia_exhibe" 
+            name="existencia_exhibe" 
+            [(ngModel)]="producto.existencia_exhibe" 
+            #existenciaExhibeInput="ngModel"
+            required 
+            min="0"
+            max="10000"
+            class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+          <div *ngIf="existenciaExhibeInput.invalid && (existenciaExhibeInput.dirty || existenciaExhibeInput.touched)" class="text-red-600 mt-2">
+            <div *ngIf="existenciaExhibeInput.errors?.['required']">
+              La existencia en exhibición es obligatoria.
             </div>
-
-            <!-- Stock en Exhibición -->
-            <div>
-              <label for="stock_exhibe" class="block text-lg font-medium text-gray-700">Stock en Exhibición:</label>
-              <input 
-                type="number" 
-                id="stock_exhibe" 
-                name="stock_exhibe" 
-                [(ngModel)]="producto.stock_exhibe" 
-                required 
-                class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
+            <div *ngIf="existenciaExhibeInput.errors?.['min']">
+              La existencia no puede ser negativa.
             </div>
-
-            <!-- Existencia en Almacén -->
-            <div>
-              <label for="existencia_almacen" class="block text-lg font-medium text-gray-700">Existencia en Almacén:</label>
-              <input 
-                type="number" 
-                id="existencia_almacen" 
-                name="existencia_almacen" 
-                [(ngModel)]="producto.existencia_almacen" 
-                required 
-                class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-            </div>
-
-            <!-- Stock en Almacén -->
-            <div>
-              <label for="stock_almacen" class="block text-lg font-medium text-gray-700">Stock en Almacén:</label>
-              <input 
-                type="number" 
-                id="stock_almacen" 
-                name="stock_almacen" 
-                [(ngModel)]="producto.stock_almacen" 
-                required 
-                class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
+            <div *ngIf="existenciaExhibeInput.errors?.['max']">
+              La existencia es demasiado alta.
             </div>
           </div>
-        </details>
-      </div>
+        </div>
 
-      <!-- Botón de Enviar -->
-      <div class="text-center mt-8 space-x-4">
-        <button 
-          type="submit" 
-          [disabled]="!productoForm.valid" 
-          class="px-6 py-3 text-xl font-semibold text-white bg-gradient-to-r from-green-500 to-green-600 rounded-full hover:shadow-lg transition duration-300"
-        >
-          Agregar Producto
-        </button>
-      
-        <button 
-          type="button" 
-          (click)="cancelar()" 
-          class="px-6 py-3 text-xl font-semibold text-white bg-gradient-to-r from-red-500 to-red-600 rounded-full hover:shadow-lg transition duration-300"
-        >
-          Cancelar
-        </button>       
+        <!-- Stock en Exhibición -->
+        <div>
+          <label for="stock_exhibe" class="block text-lg font-medium text-gray-700">Stock en Exhibición:</label>
+          <input 
+            type="number" 
+            id="stock_exhibe" 
+            name="stock_exhibe" 
+            [(ngModel)]="producto.stock_exhibe" 
+            #stockExhibeInput="ngModel"
+            required 
+            min="0"
+            max="10000"
+            class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+          <div *ngIf="stockExhibeInput.invalid && (stockExhibeInput.dirty || stockExhibeInput.touched)" class="text-red-600 mt-2">
+            <div *ngIf="stockExhibeInput.errors?.['required']">
+              El stock en exhibición es obligatorio.
+            </div>
+            <div *ngIf="stockExhibeInput.errors?.['min']">
+              El stock no puede ser negativo.
+            </div>
+            <div *ngIf="stockExhibeInput.errors?.['max']">
+              El stock es demasiado alto.
+            </div>
+          </div>
+        </div>
+
+        <!-- Existencia en Almacén -->
+        <div>
+          <label for="existencia_almacen" class="block text-lg font-medium text-gray-700">Existencia en Almacén:</label>
+          <input 
+            type="number" 
+            id="existencia_almacen" 
+            name="existencia_almacen" 
+            [(ngModel)]="producto.existencia_almacen" 
+            #existenciaAlmacenInput="ngModel"
+            required 
+            min="0"
+            max="50000"
+            class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+          <div *ngIf="existenciaAlmacenInput.invalid && (existenciaAlmacenInput.dirty || existenciaAlmacenInput.touched)" class="text-red-600 mt-2">
+            <div *ngIf="existenciaAlmacenInput.errors?.['required']">
+              La existencia en almacén es obligatoria.
+            </div>
+            <div *ngIf="existenciaAlmacenInput.errors?.['min']">
+              La existencia no puede ser negativa.
+            </div>
+            <div *ngIf="existenciaAlmacenInput.errors?.['max']">
+              La existencia es demasiado alta.
+            </div>
+          </div>
+        </div>
+
+        <!-- Stock en Almacén -->
+        <div>
+          <label for="stock_almacen" class="block text-lg font-medium text-gray-700">Stock en Almacén:</label>
+          <input 
+            type="number" 
+            id="stock_almacen" 
+            name="stock_almacen" 
+            [(ngModel)]="producto.stock_almacen" 
+            #stockAlmacenInput="ngModel"
+            required 
+            min="0"
+            max="50000"
+            class="w-full px-4 py-2 text-lg text-gray-900 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+          <div *ngIf="stockAlmacenInput.invalid && (stockAlmacenInput.dirty || stockAlmacenInput.touched)" class="text-red-600 mt-2">
+            <div *ngIf="stockAlmacenInput.errors?.['required']">
+              El stock en almacén es obligatorio.
+            </div>
+            <div *ngIf="stockAlmacenInput.errors?.['min']">
+              El stock no puede ser negativo.
+            </div>
+            <div *ngIf="stockAlmacenInput.errors?.['max']">
+              El stock es demasiado alto.
+            </div>
+          </div>
+        </div>
       </div>
     </form>
   </div>
